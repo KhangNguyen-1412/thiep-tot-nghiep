@@ -14,6 +14,8 @@
     
     <!-- Load Canvas Confetti for celebration effect -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <!-- Load html2canvas for downloading card as image -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -95,6 +97,59 @@
             .decorative-border::before { left: -30px; }
             .decorative-border::after { right: -30px; }
         }
+
+        /* Tối ưu khi in thiệp ra giấy hoặc xuất PDF (Khóa chặt vào đúng 1 trang duy nhất) */
+        @media print {
+            .no-print,
+            #admin-button-container,
+            #toast,
+            #admin-modal,
+            button {
+                display: none !important;
+            }
+            
+            /* Triệt tiêu cuộn trang và ép màn hình in vừa vặn đúng 1 trang */
+            html, body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                background: #fdfbf7 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            body {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            
+            main.glass-card {
+                box-shadow: none !important;
+                border: 1px solid rgba(197, 160, 89, 0.3) !important;
+                background: #fdfbf7 !important;
+                margin: 0 !important;
+                max-width: 95% !important;
+                width: 95% !important;
+                max-height: 95vh !important; /* Không cho vượt quá chiều cao trang */
+                position: relative !important;
+                padding: 2.5rem !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            
+            /* Ẩn các lớp phủ SVGs trang trí bên ngoài để tránh tràn trang */
+            body > div.fixed {
+                display: none !important;
+            }
+            
+            @page {
+                size: A5 landscape;
+                margin: 0;
+            }
+        }
     </style>
 </head>
 
@@ -135,8 +190,8 @@
 
             <!-- Lời mời -->
             <div class="py-6 border-y border-brand-secondary/20 my-8">
-                <h2 class="text-2xl font-serif text-brand-primary font-bold mb-4">Gửi Anh Em Phòng Ký Túc Xá A309,</h2>
-                <p class="text-lg sm:text-xl leading-relaxed text-gray-700 italic px-4">
+                <h2 id="invitation-title" class="text-2xl font-serif text-brand-primary font-bold mb-4">Gửi Anh Em Phòng Ký Túc Xá A309,</h2>
+                <p id="invitation-message" class="text-lg sm:text-xl leading-relaxed text-gray-700 italic px-4">
                     "Bốn năm đại học trôi qua nhanh như một cái chớp mắt, và cuối cùng thì ngày này cũng đến.<br class="hidden sm:block"> 
                     Cảm ơn anh em đã cùng ăn, cùng ngủ, cùng 'cày' game và 'gánh' tui qua những kỳ thi sinh tử.<br class="hidden sm:block">
                     Đến chung vui cùng tui trong ngày trọng đại này nhé! Sự hiện diện của anh em là món quà tuyệt vời nhất."
@@ -177,7 +232,7 @@
             </div>
 
             <!-- Đồng hồ đếm ngược -->
-            <div class="mt-12 pt-8">
+            <div class="mt-12 pt-8 no-print">
                 <p class="inline-block font-serif text-lg font-medium decorative-border mb-6 text-brand-primary">
                     Chỉ còn
                 </p>
@@ -187,15 +242,104 @@
             </div>
 
             <!-- Nút tương tác -->
-            <div class="mt-10 pt-4">
-                 <button onclick="fireConfetti()" class="bg-brand-primary hover:bg-opacity-90 text-white font-medium py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl active:scale-95 flex items-center mx-auto space-x-2">
-                    <span>Cùng Chúc Mừng Nhé!</span>
-                    <span>🎉</span>
+            <div class="mt-10 pt-4 flex flex-col sm:flex-row justify-center items-center gap-4 no-print">
+                 <button onclick="fireConfetti()" class="bg-brand-primary hover:bg-opacity-90 text-white font-medium py-3 px-6 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl active:scale-95 flex items-center justify-center space-x-2 w-48 sm:w-auto">
+                    <span>Chúc Mừng! 🎉</span>
+                </button>
+                <button id="btn-download-image" onclick="downloadCardAsImage()" class="bg-brand-secondary hover:bg-opacity-90 text-brand-primary font-medium py-3 px-6 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl active:scale-95 flex items-center justify-center space-x-2 w-48 sm:w-auto hidden">
+                    <span>Tải Ảnh Thiệp</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </button>
+                <button id="btn-print-invitation" onclick="window.print()" class="bg-transparent hover:bg-brand-secondary/10 text-brand-secondary border border-brand-secondary font-medium py-3 px-6 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 w-48 sm:w-auto hidden">
+                    <span>In Thiệp Mời</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
                 </button>
             </div>
 
         </div>
     </main>
+
+    <!-- Floating Admin Button (Nút Tạo Link Mời) -->
+    <div id="admin-button-container" class="fixed bottom-6 right-6 z-40 transition-all duration-300 hover:scale-105 active:scale-95 hidden">
+        <button onclick="openAdminModal()" class="bg-brand-secondary text-brand-primary p-4 rounded-full shadow-2xl border border-brand-secondary/30 hover:shadow-brand-secondary/20 hover:shadow-xl transition-all duration-300 flex items-center justify-center group" aria-label="Tạo link mời">
+            <!-- Icon Share/Link -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.632-2.316m0 0a3 3 0 10-5.367-2.684 3 3 0 005.367 2.684zm0 9.316l4.632-2.316m-4.632 2.316a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0-9.316a3 3 0 010 4.632m0 0l4.632 2.316m-4.632-2.316a3 3 0 00-5.367 2.684 3 3 0 005.367-2.684z"></path>
+            </svg>
+            <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-out text-sm font-semibold whitespace-nowrap text-brand-primary">Tạo Link Mời</span>
+        </button>
+    </div>
+
+    <!-- Admin Modal (Hộp thoại Tạo Link Mời) -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-card bg-brand-light border border-brand-secondary/30 rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl relative transform translate-y-8 transition-all duration-300" id="admin-modal-content">
+            <!-- Close Button -->
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-500 hover:text-brand-primary p-2 transition-colors" aria-label="Đóng">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="mb-6">
+                <h3 class="font-serif text-2xl font-bold text-brand-primary">Công Cụ Tạo Link Mời</h3>
+                <p class="text-xs text-brand-secondary mt-1">Nhập thông tin để tạo link mời cá nhân hóa cho từng khách</p>
+            </div>
+
+            <!-- Modal Form -->
+            <div class="space-y-4 text-left">
+                <div>
+                    <label for="guest-name" class="block text-sm font-medium text-brand-primary mb-1">Tên khách mời</label>
+                    <input type="text" id="guest-name" class="w-full px-4 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-sm" placeholder="Ví dụ: Anh Nam, Bạn Vy, Thầy Sơn...">
+                </div>
+
+                <div>
+                    <label for="guest-group" class="block text-sm font-medium text-brand-primary mb-1">Nhóm mối quan hệ</label>
+                    <select id="guest-group" class="w-full px-4 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-sm cursor-pointer">
+                        <option value="banbe">Bạn bè / Bạn học</option>
+                        <option value="giadinh">Gia đình ruột thịt</option>
+                        <option value="dongho">Họ hàng / Dòng họ</option>
+                        <option value="nguoiyeu">Người yêu</option>
+                        <option value="a309">Anh em Phòng A309 (Hiện tại)</option>
+                        <option value="cuua309">Cựu thành viên Phòng A309</option>
+                        <option value="thayco">Thầy cô giáo</option>
+                        <option value="khac">Khách mời khác (Mặc định)</option>
+                    </select>
+                </div>
+
+                <div class="pt-2">
+                    <button onclick="generateAndCopyLink()" id="btn-generate" class="w-full bg-brand-primary hover:bg-opacity-95 text-white font-medium py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center space-x-2">
+                        <span>Tạo & Copy Link Mời</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="preview-container" class="hidden pt-2">
+                    <label class="block text-xs font-semibold text-brand-secondary uppercase tracking-wider mb-1">Đường dẫn đã tạo:</label>
+                    <div class="flex items-center space-x-2 bg-white/50 p-2.5 rounded-xl border border-brand-secondary/20">
+                        <input type="text" id="guest-link-preview" class="w-full bg-transparent border-none text-xs text-brand-primary focus:outline-none cursor-text select-all" readonly>
+                        <button onclick="copyToClipboardOnly()" class="text-brand-secondary hover:text-brand-primary p-1 transition-colors" title="Copy lại">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification (Thông báo góc màn hình) -->
+    <div id="toast" class="fixed bottom-24 right-6 bg-brand-primary text-white border border-brand-secondary/40 px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center space-x-2 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300">
+        <span class="text-brand-secondary">✓</span>
+        <span id="toast-message" class="text-sm font-medium">Đã sao chép link mời!</span>
+    </div>
 
     <script>
         // Set the date we're counting down to
@@ -297,6 +441,282 @@
                 colors: ['#1a365d', '#c5a059']
             });
         }, 1500);
+
+        // Template lời chúc cá nhân hóa
+        const INVITATION_TEMPLATES = {
+            a309: {
+                title: (name) => name ? `Thân gửi ${name} - Phòng A309,` : "Gửi Anh Em Phòng Ký Túc Xá A309,",
+                message: `"Bốn năm đại học trôi qua nhanh như một cái chớp mắt, và cuối cùng thì ngày này cũng đến.<br class="hidden sm:block"> Cảm ơn anh em đã cùng ăn, cùng ngủ, cùng 'cày' game và 'gánh' tui qua những kỳ thi sinh tử.<br class="hidden sm:block"> Đến chung vui cùng tui trong ngày trọng đại này nhé! Sự hiện diện của anh em là món quà tuyệt vời nhất."`
+            },
+            cuua309: {
+                title: (name) => name ? `Thân gửi ${name} - Cựu Thành Viên A309,` : "Gửi Anh Em Cựu Thành Viên Phòng A309,",
+                message: `"Dù đã ra phòng và mỗi đứa một phương trời, nhưng những kỷ niệm thời ở chung phòng A309 vẫn là những năm tháng rực rỡ nhất.<br class="hidden sm:block"> Cảm ơn anh đã đồng hành cùng em. Đến chung vui cùng em trong ngày tốt nghiệp nhé!."`
+            },
+            giadinh: {
+                title: (name) => name ? `Kính gửi ${name},` : "Kính gửi Bố Mẹ & Gia đình,",
+                message: `"Con xin bày tỏ lòng biết ơn sâu sắc nhất đến bố mẹ và gia đình, những người đã luôn chăm sóc, dìu dắt và là điểm tựa vững chắc nhất của con suốt chặng đường học tập vừa qua.<br class="hidden sm:block"> Sự hiện diện của gia đình trong ngày tốt nghiệp là niềm hạnh phúc lớn lao nhất của con."`
+            },
+            dongho: {
+                title: (name) => name ? `Kính gửi ${name},` : "Kính gửi Họ Hàng & Dòng Họ,",
+                message: `"Con/cháu xin gửi lời cảm ơn chân thành nhất đến cô dì, chú bác và họ hàng đã luôn động viên, quan tâm và ủng hộ con/cháu trong suốt những năm tháng đi học.<br class="hidden sm:block"> Trân trọng kính mời mọi người đến chung vui cùng con/cháu trong ngày lễ tốt nghiệp này."`
+            },
+            nguoiyeu: {
+                title: (name) => name ? `Gửi Bé Yêu ${name},` : "Gửi Bé Yêu Của Anh,",
+                message: `"Cảm ơn em vì đã luôn ở bên cạnh, lắng nghe, chia sẻ và là nguồn động lực lớn lao giúp anh vượt qua những ngày học tập căng thẳng.<br class="hidden sm:block"> Ngày anh bước lên bục nhận bằng tốt nghiệp, anh muốn em là người đầu tiên chứng kiến khoảnh khắc này. Đến chung vui cùng anh nhé!"`
+            },
+            banbe: {
+                title: (name) => name ? `Thân gửi bạn ${name},` : "Thân gửi Bạn,",
+                message: `"Cảm ơn bạn đã luôn đồng hành, chia sẻ tài liệu học tập, cùng cày deadline thức đêm làm bài tập lớn và tạo nên những kỷ niệm thời sinh viên thật đẹp.<br class="hidden sm:block"> Hãy đến chung vui cùng mình trong ngày trọng đại này nhé! Sự hiện diện của bạn là niềm vui lớn của mình."`
+            },
+            thayco: {
+                title: (name) => name ? `Kính gửi Thầy/Cô ${name},` : "Kính gửi Quý Thầy Cô,",
+                message: `"Em xin bày tỏ lòng biết ơn sâu sắc đến Thầy/Cô, những người lái đò tận tụy đã truyền dạy kiến thức, dìu dắt và định hướng cho em trong suốt thời gian học tập tại trường đại học.<br class="hidden sm:block"> Trân trọng kính mời Thầy/Cô đến chung vui cùng em trong buổi lễ tốt nghiệp này."`
+            },
+            khac: {
+                title: (name) => name ? `Thân gửi ${name},` : "Thân gửi Bạn,",
+                message: `"Bốn năm đại học trôi qua nhanh như một cái chớp mắt, và cuối cùng thì ngày này cũng đến.<br class="hidden sm:block"> Sự đồng hành và ủng hộ của bạn trong suốt chặng đường học tập vừa qua là niềm vinh hạnh lớn của mình.<br class="hidden sm:block"> Hãy đến chung vui cùng mình trong ngày trọng đại này nhé!"`
+            }
+        };
+
+        // Hàm khởi tạo và cá nhân hóa thiệp mời từ URL
+        function initInvitation() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            const group = urlParams.get('group');
+            const isAdmin = urlParams.get('admin') === 'true';
+
+            let selectedGroup = 'a309';
+            if (group && INVITATION_TEMPLATES[group]) {
+                selectedGroup = group;
+            } else if (name) {
+                selectedGroup = 'khac';
+            }
+
+            const template = INVITATION_TEMPLATES[selectedGroup];
+            
+            // Cập nhật Tiêu đề
+            const titleEl = document.getElementById('invitation-title');
+            if (titleEl) {
+                if (typeof template.title === 'function') {
+                    titleEl.textContent = template.title(name);
+                } else {
+                    titleEl.textContent = template.title;
+                }
+            }
+
+            // Cập nhật Lời nhắn
+            const messageEl = document.getElementById('invitation-message');
+            if (messageEl) {
+                messageEl.innerHTML = template.message;
+            }
+
+            // Ẩn/Hiện nút Admin Panel, nút Tải ảnh và In thiệp (chỉ hiện khi xem admin/owner, ẩn khi gửi cho khách)
+            const hasPersonalization = name || group;
+            const showOwnerTools = !hasPersonalization || isAdmin;
+
+            const adminBtn = document.getElementById('admin-button-container');
+            if (adminBtn) {
+                if (showOwnerTools) {
+                    adminBtn.classList.remove('hidden');
+                } else {
+                    adminBtn.classList.add('hidden');
+                }
+            }
+
+            const downloadBtn = document.getElementById('btn-download-image');
+            const printBtn = document.getElementById('btn-print-invitation');
+            if (downloadBtn && printBtn) {
+                if (showOwnerTools) {
+                    downloadBtn.classList.remove('hidden');
+                    printBtn.classList.remove('hidden');
+                } else {
+                    downloadBtn.classList.add('hidden');
+                    printBtn.classList.add('hidden');
+                }
+            }
+        }
+
+        // --- Logic Bảng Tạo Link Mời (Link Generator) ---
+        const modal = document.getElementById('admin-modal');
+        const modalContent = document.getElementById('admin-modal-content');
+        const toast = document.getElementById('toast');
+
+        function openAdminModal() {
+            modal.classList.remove('pointer-events-none');
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+            
+            modalContent.classList.remove('translate-y-8');
+            modalContent.classList.add('translate-y-0');
+        }
+
+        function closeAdminModal() {
+            modal.classList.add('pointer-events-none');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            
+            modalContent.classList.remove('translate-y-0');
+            modalContent.classList.add('translate-y-8');
+            
+            // Reset input preview
+            document.getElementById('preview-container').classList.add('hidden');
+            const btnGen = document.getElementById('btn-generate');
+            btnGen.innerHTML = '<span>Tạo & Copy Link Mời</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
+        }
+
+        function showToast(message) {
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = message;
+            
+            toast.classList.remove('pointer-events-none', 'opacity-0', 'translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.add('pointer-events-none', 'opacity-0', 'translate-y-10');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+        }
+
+        function generateAndCopyLink() {
+            const nameVal = document.getElementById('guest-name').value.trim();
+            const groupVal = document.getElementById('guest-group').value;
+
+            // Lấy base URL không có query params
+            const currentBase = window.location.href.split('?')[0];
+            
+            // Tạo URL mới
+            const params = new URLSearchParams();
+            if (nameVal) params.append('name', nameVal);
+            if (groupVal) params.append('group', groupVal);
+            
+            const queryString = params.toString();
+            const finalUrl = queryString ? `${currentBase}?${queryString}` : currentBase;
+
+            const previewInput = document.getElementById('guest-link-preview');
+            previewInput.value = finalUrl;
+            document.getElementById('preview-container').classList.remove('hidden');
+
+            navigator.clipboard.writeText(finalUrl)
+                .then(() => {
+                    showToast('Đã copy link mời!');
+                    
+                    const btnGen = document.getElementById('btn-generate');
+                    btnGen.innerHTML = '<span>Đã Copy! ✓</span>';
+                    btnGen.classList.add('bg-green-600');
+                    
+                    setTimeout(() => {
+                        btnGen.innerHTML = '<span>Tạo & Copy Link Mời</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
+                        btnGen.classList.remove('bg-green-600');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Lỗi sao chép:', err);
+                    showToast('Có lỗi xảy ra, hãy copy thủ công link bên dưới.');
+                });
+        }
+
+        function copyToClipboardOnly() {
+            const previewInput = document.getElementById('guest-link-preview');
+            navigator.clipboard.writeText(previewInput.value)
+                .then(() => {
+                    showToast('Đã copy lại link!');
+                });
+        }
+
+        // Lắng nghe click ngoài modal để đóng
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeAdminModal();
+            }
+        });
+
+        // Hàm tải ảnh thiệp về máy (sử dụng html2canvas)
+        function downloadCardAsImage() {
+            const card = document.querySelector('main.glass-card');
+            if (!card) return;
+
+            // Lấy tất cả các phần tử không muốn xuất hiện trên ảnh tải về
+            const noPrintElements = card.querySelectorAll('.no-print');
+            
+            // Ẩn tạm thời để hình ảnh thiệp gọn gàng và tinh tế
+            noPrintElements.forEach(el => {
+                el.dataset.originalDisplay = el.style.display;
+                el.style.display = 'none';
+            });
+
+            showToast('Đang tạo ảnh thiệp...');
+
+            // Chờ giao diện cập nhật lại kích thước (reflow)
+            setTimeout(() => {
+                html2canvas(card, {
+                    scale: 3, // Độ phân giải siêu cao 3x để in/chia sẻ siêu sắc nét
+                    useCORS: true,
+                    backgroundColor: '#fdfbf7', // Đảm bảo màu nền thiệp đồng nhất
+                    logging: false,
+                    allowTaint: true,
+                    onclone: (clonedDoc) => {
+                        const clonedCard = clonedDoc.querySelector('main.glass-card');
+                        if (clonedCard) {
+                            // Tắt và gỡ bỏ hoàn toàn CSS animations để tránh bị mờ do opacity/transform đang chạy nửa chừng
+                            clonedCard.classList.remove('animate-fade-in');
+                            clonedCard.style.animation = 'none';
+                            clonedCard.style.transition = 'none';
+                            clonedCard.style.opacity = '1';
+                            clonedCard.style.transform = 'none';
+
+                            // Áp dụng tương tự cho toàn bộ phần tử con bên trong
+                            const allElements = clonedCard.querySelectorAll('*');
+                            allElements.forEach(el => {
+                                el.classList.remove('animate-fade-in', 'animate-slide-up', 'pulse-slow');
+                                el.style.animation = 'none';
+                                el.style.transition = 'none';
+                                el.style.transform = 'none';
+                                
+                                // Khôi phục hiển thị đầy đủ (không bị mờ)
+                                if (el.style.opacity !== '0' && !el.classList.contains('no-print')) {
+                                    el.style.opacity = '1';
+                                }
+                            });
+
+                            // Khắc phục lỗi html2canvas không vẽ được gradient-clip text (chữ nhũ vàng bị biến mất hoặc mờ)
+                            const goldTexts = clonedCard.querySelectorAll('.gold-text');
+                            goldTexts.forEach(el => {
+                                el.style.webkitBackgroundClip = 'initial';
+                                el.style.webkitTextFillColor = 'initial';
+                                el.style.background = 'none';
+                                el.style.color = '#c5a059'; // Sử dụng màu vàng đồng của thương hiệu làm màu chữ
+                            });
+                        }
+                    }
+                }).then(canvas => {
+                    // Khôi phục hiển thị cho trang web
+                    noPrintElements.forEach(el => {
+                        el.style.display = el.dataset.originalDisplay || '';
+                    });
+
+                    // Tạo link download
+                    const link = document.createElement('a');
+                    const guestName = new URLSearchParams(window.location.search).get('name') || '';
+                    const filename = guestName ? `Thiep_Moi_Tot_Nghiep_${guestName.replace(/\s+/g, '_')}.png` : 'Thiep_Moi_Tot_Nghiep.png';
+                    
+                    link.download = filename;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    showToast('Đã tải hình thiệp thành công!');
+                }).catch(err => {
+                    console.error('Lỗi khi chụp hình thiệp:', err);
+                    // Khôi phục hiển thị nếu có lỗi xảy ra
+                    noPrintElements.forEach(el => {
+                        el.style.display = el.dataset.originalDisplay || '';
+                    });
+                    showToast('Không tải được ảnh. Hãy thử chụp màn hình nhé!');
+                });
+            }, 300);
+        }
+
+        // Chạy khởi tạo thiệp mời khi load trang
+        initInvitation();
     </script>
 </body>
 </html>
