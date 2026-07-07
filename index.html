@@ -225,8 +225,9 @@
                     </div>
                     <div>
                         <h3 class="font-serif font-bold text-xl mb-1">Địa Điểm</h3>
-                        <p class="text-gray-800 text-lg">Hội Trường B</p>
-                        <p class="text-brand-secondary text-sm mt-1">(Vui lòng có mặt đúng giờ để ổn định chỗ ngồi nhé)</p>
+                        <p class="text-gray-800 text-lg font-semibold">Hội Trường B</p>
+                        <p class="text-gray-600 text-sm mt-0.5">Số 280 An Dương Vương, Phường Chợ Quán, Thành phố Hồ Chí Minh</p>
+                        <p class="text-brand-secondary text-xs mt-2">(Vui lòng có mặt đúng giờ để ổn định chỗ ngồi nhé)</p>
                     </div>
                 </div>
             </div>
@@ -263,80 +264,218 @@
         </div>
     </main>
 
-    <!-- Floating Admin Button (Nút Tạo Link Mời) -->
+    <!-- Floating Admin Button (Nút Quản Trị) -->
     <div id="admin-button-container" class="fixed bottom-6 right-6 z-40 transition-all duration-300 hover:scale-105 active:scale-95 hidden">
-        <button onclick="openAdminModal()" class="bg-brand-secondary text-brand-primary p-4 rounded-full shadow-2xl border border-brand-secondary/30 hover:shadow-brand-secondary/20 hover:shadow-xl transition-all duration-300 flex items-center justify-center group" aria-label="Tạo link mời">
-            <!-- Icon Share/Link -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.632-2.316m0 0a3 3 0 10-5.367-2.684 3 3 0 005.367 2.684zm0 9.316l4.632-2.316m-4.632 2.316a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0-9.316a3 3 0 010 4.632m0 0l4.632 2.316m-4.632-2.316a3 3 0 00-5.367 2.684 3 3 0 005.367-2.684z"></path>
+        <button onclick="openAdminModal()" class="bg-brand-secondary text-brand-primary p-4 rounded-full shadow-2xl border border-brand-secondary/30 hover:shadow-brand-secondary/20 hover:shadow-xl transition-all duration-300 flex items-center justify-center group" aria-label="Quản lý">
+            <!-- Icon Dynamic (Lock or Gear) -->
+            <svg id="admin-btn-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
             </svg>
-            <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-out text-sm font-semibold whitespace-nowrap text-brand-primary">Tạo Link Mời</span>
+            <span id="admin-btn-text" class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-out text-sm font-semibold whitespace-nowrap text-brand-primary">Đăng Nhập</span>
         </button>
     </div>
 
-    <!-- Admin Modal (Hộp thoại Tạo Link Mời) -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-        <div class="glass-card bg-brand-light border border-brand-secondary/30 rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl relative transform translate-y-8 transition-all duration-300" id="admin-modal-content">
+    <!-- Admin Modal (Hộp thoại Quản Trị Đa Năng) -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-card bg-brand-light border border-brand-secondary/30 rounded-3xl p-6 sm:p-8 max-w-2xl w-full mx-4 shadow-2xl relative transform translate-y-8 transition-all duration-300 max-h-[90vh] overflow-y-auto" id="admin-modal-content">
             <!-- Close Button -->
-            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-500 hover:text-brand-primary p-2 transition-colors" aria-label="Đóng">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-500 hover:text-brand-primary p-2 transition-colors z-10" aria-label="Đóng">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
 
-            <!-- Modal Header -->
-            <div class="mb-6">
-                <h3 class="font-serif text-2xl font-bold text-brand-primary">Công Cụ Tạo Link Mời</h3>
-                <p class="text-xs text-brand-secondary mt-1">Nhập thông tin để tạo link mời cá nhân hóa cho từng khách</p>
+            <!-- 1. LOGIN PANEL (Hiện khi chưa đăng nhập) -->
+            <div id="admin-login-panel" class="text-center space-y-6 py-6 max-w-sm mx-auto">
+                <div class="space-y-2">
+                    <div class="bg-brand-secondary/15 p-3 rounded-full text-brand-secondary inline-block mx-auto mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold text-brand-primary">Xác Thực Quản Trị</h3>
+                    <p class="text-xs text-brand-secondary">Vui lòng nhập tài khoản và mật khẩu để mở Bảng Điều Khiển</p>
+                </div>
+                
+                <div class="space-y-3 text-left">
+                    <div>
+                        <label for="admin-username-input" class="block text-xs font-semibold text-brand-primary mb-1">Tài khoản</label>
+                        <input type="text" id="admin-username-input" class="w-full px-4 py-2.5 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-sm" placeholder="Nhập tài khoản...">
+                    </div>
+                    <div>
+                        <label for="admin-password-input" class="block text-xs font-semibold text-brand-primary mb-1">Mật khẩu</label>
+                        <input type="password" id="admin-password-input" class="w-full px-4 py-2.5 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-sm" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')handleLogin()">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full bg-brand-primary hover:bg-opacity-95 text-white font-medium py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 mt-4 text-sm">
+                        Đăng Nhập
+                    </button>
+                </div>
             </div>
 
-            <!-- Modal Form -->
-            <div class="space-y-4 text-left">
-                <div>
-                    <label for="guest-name" class="block text-sm font-medium text-brand-primary mb-1">Tên khách mời</label>
-                    <input type="text" id="guest-name" class="w-full px-4 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-sm" placeholder="Ví dụ: Anh Nam, Bạn Vy, Thầy Sơn...">
+            <!-- 2. DASHBOARD PANEL (Hiện sau khi đã đăng nhập) -->
+            <div id="admin-dashboard-panel" class="hidden space-y-6">
+                <!-- Header -->
+                <div class="text-left border-b border-brand-secondary/20 pb-4 relative pr-12">
+                    <button onclick="handleLogout()" class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium transition-colors mb-1 inline-block">Đăng xuất ⎋</button>
+                    <h3 class="font-serif text-2xl font-bold text-brand-primary">Bảng Điều Khiển Quản Trị</h3>
+                    <p class="text-xs text-brand-secondary mt-0.5">Quản lý danh sách khách mời và nội dung câu chúc của thiệp</p>
                 </div>
 
-                <div>
-                    <label for="guest-group" class="block text-sm font-medium text-brand-primary mb-1">Nhóm mối quan hệ</label>
-                    <select id="guest-group" class="w-full px-4 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-sm cursor-pointer">
-                        <option value="banbe">Bạn bè / Bạn học</option>
-                        <option value="giadinh">Gia đình ruột thịt</option>
-                        <option value="dongho">Họ hàng / Dòng họ</option>
-                        <option value="nguoiyeu">Người yêu</option>
-                        <option value="a309">Anh em Phòng A309 (Hiện tại)</option>
-                        <option value="cuua309">Cựu thành viên Phòng A309</option>
-                        <option value="thayco">Thầy cô giáo</option>
-                        <option value="khac">Khách mời khác (Mặc định)</option>
-                    </select>
-                </div>
-
-                <div class="pt-2 flex space-x-2">
-                    <button onclick="generateAndCopyLink()" id="btn-generate" class="flex-1 bg-brand-primary hover:bg-opacity-95 text-white font-medium py-3 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center space-x-1.5 text-sm">
-                        <span>Tạo & Copy Link</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                        </svg>
+                <!-- Tabs navigation -->
+                <div class="flex border-b border-brand-secondary/10">
+                    <button id="tab-guests-btn" onclick="switchTab('guests')" class="py-2.5 px-4 font-semibold text-sm border-b-2 border-brand-primary text-brand-primary -mb-px transition-all">
+                        Khách Mời
                     </button>
-                    <button onclick="resetToDefaultCard()" class="bg-transparent hover:bg-brand-secondary/15 text-brand-secondary border border-brand-secondary/40 font-medium py-3 px-4 rounded-xl transition-all active:scale-95 text-sm">
-                        Đặt Lại
+                    <button id="tab-templates-btn" onclick="switchTab('templates')" class="py-2.5 px-4 font-medium text-sm text-gray-500 border-b-2 border-transparent hover:text-brand-primary transition-all">
+                        Lời Mời & Mối Quan Hệ
                     </button>
                 </div>
 
-                <div id="preview-container" class="hidden pt-2">
-                    <label class="block text-xs font-semibold text-brand-secondary uppercase tracking-wider mb-1">Đường dẫn đã tạo:</label>
-                    <div class="flex items-center space-x-2 bg-white/50 p-2.5 rounded-xl border border-brand-secondary/20">
-                        <input type="text" id="guest-link-preview" class="w-full bg-transparent border-none text-xs text-brand-primary focus:outline-none cursor-text select-all" readonly>
-                        <button onclick="copyToClipboardOnly()" class="text-brand-secondary hover:text-brand-primary p-1 transition-colors" title="Copy lại">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                        </button>
+                <!-- TAB 1: GUEST MANAGER -->
+                <div id="tab-guests" class="space-y-6 text-left">
+                    <!-- Form thêm khách -->
+                    <div class="bg-white/40 border border-brand-secondary/20 rounded-2xl p-4 space-y-4">
+                        <h4 class="text-sm font-semibold text-brand-primary font-serif">Thêm Khách Mời Mới</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="guest-name" class="block text-xs font-semibold text-brand-primary mb-1">Tên khách mời</label>
+                                <input type="text" id="guest-name" class="w-full px-3 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Ví dụ: Anh Nam, Bạn Vy...">
+                            </div>
+                            <div>
+                                <label for="guest-group" class="block text-xs font-semibold text-brand-primary mb-1">Nhóm mối quan hệ</label>
+                                <select id="guest-group" class="w-full px-3 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs cursor-pointer">
+                                    <!-- Sẽ được điền động bằng JS từ danh sách templates -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 pt-1">
+                            <button onclick="addGuestToList()" class="flex-1 bg-brand-primary hover:bg-opacity-95 text-white font-medium py-2.5 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center space-x-1.5 text-xs">
+                                <span>Thêm Khách & Copy Link</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
+                            <button onclick="resetToDefaultCard()" class="bg-transparent hover:bg-brand-secondary/15 text-brand-secondary border border-brand-secondary/40 font-medium py-2.5 px-4 rounded-xl transition-all active:scale-95 text-xs">
+                                Đặt Lại Thiệp
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách khách -->
+                    <div class="space-y-2">
+                        <h4 class="text-sm font-semibold text-brand-primary font-serif">Danh Sách Khách Mời (<span id="guests-count">0</span>)</h4>
+                        
+                        <div class="border border-brand-secondary/20 rounded-2xl overflow-hidden bg-white/30">
+                            <!-- Scrollable Table container -->
+                            <div class="max-h-72 overflow-y-auto">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="bg-brand-primary text-white font-medium border-b border-brand-secondary/20">
+                                            <th class="p-3">Khách Mời</th>
+                                            <th class="p-3">Mối Quan Hệ</th>
+                                            <th class="p-3 text-right">Hành Động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="guests-table-body" class="divide-y divide-brand-secondary/10 border-b border-brand-secondary/10">
+                                        <!-- Điền bằng JS -->
+                                        <tr>
+                                            <td colspan="3" class="p-4 text-center text-gray-500 italic">Chưa có khách mời nào được tạo.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Link sau khi tạo -->
+                    <div id="preview-container" class="hidden space-y-1">
+                        <label class="block text-xs font-semibold text-brand-secondary uppercase tracking-wider">Đường dẫn vừa tạo:</label>
+                        <div class="flex items-center space-x-2 bg-white/50 p-2.5 rounded-xl border border-brand-secondary/20">
+                            <input type="text" id="guest-link-preview" class="w-full bg-transparent border-none text-xs text-brand-primary focus:outline-none cursor-text select-all" readonly>
+                            <button onclick="copyToClipboardOnly()" class="text-brand-secondary hover:text-brand-primary p-1 transition-colors" title="Copy lại">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: TEMPLATE MANAGER -->
+                <div id="tab-templates" class="hidden space-y-6 text-left">
+                    <div class="bg-white/40 border border-brand-secondary/20 rounded-2xl p-4 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-sm font-semibold text-brand-primary font-serif">Biên Tập Lời Mời & Nhóm</h4>
+                            <button onclick="toggleNewGroupForm()" class="bg-brand-secondary/20 text-brand-primary hover:bg-brand-secondary/35 text-xs font-semibold py-1 px-3 rounded-lg transition-colors">
+                                + Thêm Nhóm Mới
+                            </button>
+                        </div>
+
+                        <!-- Dropdown chọn nhóm để sửa -->
+                        <div>
+                            <label for="template-select" class="block text-xs font-semibold text-brand-primary mb-1">Chọn nhóm để chỉnh sửa</label>
+                            <select id="template-select" onchange="loadTemplateToEditor()" class="w-full px-3 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs cursor-pointer">
+                                <!-- Điền bằng JS -->
+                            </select>
+                        </div>
+
+                        <!-- Form chỉnh sửa câu chúc -->
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <label for="editor-group-name" class="block text-xs font-semibold text-brand-primary mb-1">Tên mối quan hệ</label>
+                                <input type="text" id="editor-group-name" class="w-full px-3 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs">
+                            </div>
+                            <div>
+                                <label for="editor-template-title" class="block text-xs font-semibold text-brand-primary mb-1">Tiêu đề xưng hô (Sử dụng <code class="bg-gray-200 px-1 rounded text-red-600 font-mono">{name}</code> để chèn tên khách)</label>
+                                <input type="text" id="editor-template-title" class="w-full px-3 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Ví dụ: Thân gửi bạn {name},">
+                            </div>
+                            <div>
+                                <label for="editor-template-message" class="block text-xs font-semibold text-brand-primary mb-1">Lời nhắn thiệp mời</label>
+                                <textarea id="editor-template-message" rows="4" class="w-full px-3 py-2 border border-brand-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Nhập lời mời..."></textarea>
+                            </div>
+                            <div class="pt-2 flex justify-between items-center">
+                                <button onclick="saveTemplateChanges()" class="bg-brand-primary hover:bg-opacity-95 text-white font-medium py-2.5 px-6 rounded-xl shadow-md transition-all active:scale-95 text-xs">
+                                    Lưu Lời Mời
+                                </button>
+                                <button id="btn-delete-group" onclick="deleteCustomGroup()" class="text-xs text-red-500 hover:text-red-700 hover:underline font-semibold hidden">
+                                    Xóa nhóm này
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Thêm Nhóm Mới (Ẩn mặc định) -->
+                    <div id="new-group-form" class="hidden bg-white/50 border border-brand-secondary/20 rounded-2xl p-4 space-y-3">
+                        <h4 class="text-xs font-semibold text-brand-primary uppercase tracking-wider">Thêm Nhóm Quan Hệ Mới</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="new-group-id" class="block text-xs font-semibold text-brand-primary mb-1">Mã nhóm (Viết liền, không dấu)</label>
+                                <input type="text" id="new-group-id" class="w-full px-3 py-1.5 border border-brand-secondary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Ví dụ: dongnghiep">
+                            </div>
+                            <div>
+                                <label for="new-group-name" class="block text-xs font-semibold text-brand-primary mb-1">Tên mối quan hệ</label>
+                                <input type="text" id="new-group-name" class="w-full px-3 py-1.5 border border-brand-secondary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Ví dụ: Đồng nghiệp">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="new-group-title" class="block text-xs font-semibold text-brand-primary mb-1">Tiêu đề xưng hô</label>
+                            <input type="text" id="new-group-title" class="w-full px-3 py-1.5 border border-brand-secondary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Ví dụ: Thân gửi anh/chị {name},">
+                        </div>
+                        <div>
+                            <label for="new-group-message" class="block text-xs font-semibold text-brand-primary mb-1">Lời nhắn thiệp</label>
+                            <textarea id="new-group-message" rows="3" class="w-full px-3 py-1.5 border border-brand-secondary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-secondary bg-white/80 text-brand-primary text-xs" placeholder="Nhập lời mời mặc định..."></textarea>
+                        </div>
+                        <div class="pt-1 flex space-x-2">
+                            <button onclick="createNewGroupSubmit()" class="flex-1 bg-brand-primary hover:bg-opacity-95 text-white font-medium py-2 px-4 rounded-lg text-xs shadow-sm transition-all active:scale-95">
+                                Tạo nhóm mới
+                            </button>
+                            <button onclick="toggleNewGroupForm(false)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg text-xs transition-all active:scale-95">
+                                Hủy bỏ
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
     <!-- Toast Notification (Thông báo góc màn hình) -->
     <div id="toast" class="fixed bottom-24 right-6 bg-brand-primary text-white border border-brand-secondary/40 px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center space-x-2 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300">
@@ -345,6 +484,35 @@
     </div>
 
     <script>
+        // Bộ nhớ tạm thời trong bộ nhớ RAM nếu localStorage bị trình duyệt chặn (khi chạy offline file://)
+        const safeStorage = {
+            getItem: function(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.warn("localStorage access denied, using in-memory fallback:", e);
+                    return this._data[key] || null;
+                }
+            },
+            setItem: function(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    console.warn("localStorage access denied, using in-memory fallback:", e);
+                    this._data[key] = value;
+                }
+            },
+            removeItem: function(key) {
+                try {
+                    localStorage.removeItem(key);
+                } catch (e) {
+                    console.warn("localStorage access denied, using in-memory fallback:", e);
+                    delete this._data[key];
+                }
+            },
+            _data: {}
+        };
+
         // Set the date we're counting down to
         // Lễ tốt nghiệp: 07:30 ngày 24/07/2026
         const graduationDate = new Date("Jul 24, 2026 07:30:00").getTime();
@@ -445,43 +613,111 @@
             });
         }, 1500);
 
-        // Template lời chúc cá nhân hóa
-        const INVITATION_TEMPLATES = {
+        // --- HỆ THỐNG QUẢN TRỊ ADMIN (CMS) ---
+
+        // 1. Mẫu câu chúc mặc định của hệ thống
+        const DEFAULT_TEMPLATES = {
             a309: {
-                title: (name) => name ? `Thân gửi ${name} - Phòng A309,` : "Gửi Anh Em Phòng Ký Túc Xá A309,",
+                name: "Anh em Phòng A309 (Hiện tại)",
+                title: "Thân gửi {name} - Phòng A309,",
+                titleFallback: "Gửi Anh Em Phòng Ký Túc Xá A309,",
                 message: `"Bốn năm đại học trôi qua nhanh như một cái chớp mắt, và cuối cùng thì ngày này cũng đến.<br class="hidden sm:block"> Cảm ơn anh em đã cùng ăn, cùng ngủ, cùng 'cày' game và 'gánh' tui qua những kỳ thi sinh tử.<br class="hidden sm:block"> Đến chung vui cùng tui trong ngày trọng đại này nhé! Sự hiện diện của anh em là món quà tuyệt vời nhất."`
             },
             cuua309: {
-                title: (name) => name ? `Thân gửi ${name} - Cựu Thành Viên A309,` : "Gửi Anh Em Cựu Thành Viên Phòng A309,",
+                name: "Cựu thành viên Phòng A309",
+                title: "Thân gửi {name} - Cựu Thành Viên A309,",
+                titleFallback: "Gửi Anh Em Cựu Thành Viên Phòng A309,",
                 message: `"Dù đã ra phòng và mỗi đứa một phương trời, nhưng những kỷ niệm thời ở chung phòng A309 vẫn là những năm tháng rực rỡ nhất.<br class="hidden sm:block"> Cảm ơn anh đã đồng hành cùng em. Đến chung vui cùng em trong ngày tốt nghiệp nhé!."`
             },
             giadinh: {
-                title: (name) => name ? `Kính gửi ${name},` : "Kính gửi Bố Mẹ & Gia đình,",
+                name: "Gia đình ruột thịt",
+                title: "Kính gửi {name},",
+                titleFallback: "Kính gửi Bố Mẹ & Gia đình,",
                 message: `"Con xin bày tỏ lòng biết ơn sâu sắc nhất đến bố mẹ và gia đình, những người đã luôn chăm sóc, dìu dắt và là điểm tựa vững chắc nhất của con suốt chặng đường học tập vừa qua.<br class="hidden sm:block"> Sự hiện diện của gia đình trong ngày tốt nghiệp là niềm hạnh phúc lớn lao nhất của con."`
             },
             dongho: {
-                title: (name) => name ? `Kính gửi ${name},` : "Kính gửi Họ Hàng & Dòng Họ,",
+                name: "Họ hàng / Dòng họ",
+                title: "Kính gửi {name},",
+                titleFallback: "Kính gửi Họ Hàng & Dòng Họ,",
                 message: `"Con/cháu xin gửi lời cảm ơn chân thành nhất đến cô dì, chú bác và họ hàng đã luôn động viên, quan tâm và ủng hộ con/cháu trong suốt những năm tháng đi học.<br class="hidden sm:block"> Trân trọng kính mời mọi người đến chung vui cùng con/cháu trong ngày lễ tốt nghiệp này."`
             },
             nguoiyeu: {
-                title: (name) => name ? `Gửi Bé Yêu ${name},` : "Gửi Bé Yêu Của Anh,",
+                name: "Người yêu",
+                title: "Gửi Bé Yêu {name},",
+                titleFallback: "Gửi Bé Yêu Của Anh,",
                 message: `"Cảm ơn em vì đã luôn ở bên cạnh, lắng nghe, chia sẻ và là nguồn động lực lớn lao giúp anh vượt qua những ngày học tập căng thẳng.<br class="hidden sm:block"> Ngày anh bước lên bục nhận bằng tốt nghiệp, anh muốn em là người đầu tiên chứng kiến khoảnh khắc này. Đến chung vui cùng anh nhé!"`
             },
             banbe: {
-                title: (name) => name ? `Thân gửi bạn ${name},` : "Thân gửi Bạn,",
+                name: "Bạn bè / Bạn học",
+                title: "Thân gửi bạn {name},",
+                titleFallback: "Thân gửi Bạn,",
                 message: `"Cảm ơn bạn đã luôn đồng hành, chia sẻ tài liệu học tập, cùng cày deadline thức đêm làm bài tập lớn và tạo nên những kỷ niệm thời sinh viên thật đẹp.<br class="hidden sm:block"> Hãy đến chung vui cùng mình trong ngày trọng đại này nhé! Sự hiện diện của bạn là niềm vui lớn của mình."`
             },
             thayco: {
-                title: (name) => name ? `Kính gửi Thầy/Cô ${name},` : "Kính gửi Quý Thầy Cô,",
+                name: "Thầy cô giáo",
+                title: "Kính gửi Thầy/Cô {name},",
+                titleFallback: "Kính gửi Quý Thầy Cô,",
                 message: `"Em xin bày tỏ lòng biết ơn sâu sắc đến Thầy/Cô, những người lái đò tận tụy đã truyền dạy kiến thức, dìu dắt và định hướng cho em trong suốt thời gian học tập tại trường đại học.<br class="hidden sm:block"> Trân trọng kính mời Thầy/Cô đến chung vui cùng em trong buổi lễ tốt nghiệp này."`
             },
             khac: {
-                title: (name) => name ? `Thân gửi ${name},` : "Thân gửi Bạn,",
+                name: "Khách mời khác",
+                title: "Thân gửi {name},",
+                titleFallback: "Thân gửi Bạn,",
                 message: `"Bốn năm đại học trôi qua nhanh như một cái chớp mắt, và cuối cùng thì ngày này cũng đến.<br class="hidden sm:block"> Sự đồng hành và ủng hộ của bạn trong suốt chặng đường học tập vừa qua là niềm vinh hạnh lớn của mình.<br class="hidden sm:block"> Hãy đến chung vui cùng mình trong ngày trọng đại này nhé!"`
             }
         };
 
-        // Hàm cập nhật trực tiếp nội dung thiệp trên trang (để preview và in/tải ảnh)
+        let INVITATION_TEMPLATES = {};
+        let GUESTS_LIST = [];
+
+        // Khởi tạo các mẫu câu chúc từ safeStorage (nếu có) hoặc dùng mặc định
+        function initTemplates() {
+            const saved = safeStorage.getItem('customTemplates');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    // Đảm bảo các template hệ thống luôn tồn tại đầy đủ, kể cả khi dữ liệu cũ bị thiếu
+                    INVITATION_TEMPLATES = Object.assign({}, DEFAULT_TEMPLATES, parsed);
+                } catch(e) {
+                    console.error("Lỗi đọc customTemplates, dùng mặc định:", e);
+                    INVITATION_TEMPLATES = { ...DEFAULT_TEMPLATES };
+                }
+            } else {
+                INVITATION_TEMPLATES = { ...DEFAULT_TEMPLATES };
+                safeStorage.setItem('customTemplates', JSON.stringify(DEFAULT_TEMPLATES));
+            }
+        }
+
+        // Khởi tạo danh sách khách mời từ safeStorage
+        function initGuests() {
+            const saved = safeStorage.getItem('guestsList');
+            if (saved) {
+                try {
+                    GUESTS_LIST = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Lỗi đọc guestsList:", e);
+                    GUESTS_LIST = [];
+                }
+            } else {
+                GUESTS_LIST = [];
+            }
+        }
+
+        // Định dạng tiêu đề theo xưng hô động (Phòng ngừa lỗi nếu template bị thiếu trường)
+        function getInvitationTitle(template, name) {
+            if (!template) return '';
+            if (name) {
+                if (template.title && template.title.includes('{name}')) {
+                    return template.title.replace(/{name}/g, name);
+                } else {
+                    return (template.title || '') + ' ' + name;
+                }
+            } else {
+                return template.titleFallback || (template.title ? template.title.replace(/{name}/g, '').trim() : '');
+            }
+        }
+
+        // Cập nhật giao diện xem trước thiệp mời (Phòng ngừa lỗi nếu template không tồn tại)
         function updateCardPreview(name, group) {
             let selectedGroup = 'a309';
             if (group && INVITATION_TEMPLATES[group]) {
@@ -490,48 +726,56 @@
                 selectedGroup = 'khac';
             }
 
-            const template = INVITATION_TEMPLATES[selectedGroup];
+            const template = INVITATION_TEMPLATES[selectedGroup] || DEFAULT_TEMPLATES[selectedGroup] || DEFAULT_TEMPLATES['khac'];
             
-            // Cập nhật Tiêu đề
             const titleEl = document.getElementById('invitation-title');
             if (titleEl) {
-                if (typeof template.title === 'function') {
-                    titleEl.textContent = template.title(name);
-                } else {
-                    titleEl.textContent = template.title;
-                }
+                titleEl.textContent = getInvitationTitle(template, name);
             }
 
-            // Cập nhật Lời nhắn
             const messageEl = document.getElementById('invitation-message');
             if (messageEl) {
-                messageEl.innerHTML = template.message;
+                messageEl.innerHTML = template ? template.message : '';
             }
         }
 
-        // Hàm khởi tạo và cá nhân hóa thiệp mời từ URL
+        // Khởi tạo và kiểm tra tham số URL khi khách vào thiệp
         function initInvitation() {
             const urlParams = new URLSearchParams(window.location.search);
             const name = urlParams.get('name');
             const group = urlParams.get('group');
             const isAdmin = urlParams.get('admin') === 'true';
 
-            // Cập nhật nội dung thiệp ban đầu
             updateCardPreview(name, group);
 
-            // Ẩn/Hiện nút Admin Panel, nút Tải ảnh và In thiệp (chỉ hiện khi xem admin/owner, ẩn khi gửi cho khách)
+            // Kiểm tra phân quyền hiển thị các nút Admin/In/Tải
             const hasPersonalization = name || group;
             const showOwnerTools = !hasPersonalization || isAdmin;
 
+            // 1. Nút góc màn hình (Khóa hoặc Quản trị)
             const adminBtn = document.getElementById('admin-button-container');
+            const btnIcon = document.getElementById('admin-btn-icon');
+            const btnText = document.getElementById('admin-btn-text');
+            const isLoggedIn = safeStorage.getItem('isAdminLoggedIn') === 'true';
+
             if (adminBtn) {
                 if (showOwnerTools) {
                     adminBtn.classList.remove('hidden');
+                    if (btnIcon) {
+                        if (isLoggedIn) {
+                            btnIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>`;
+                            if (btnText) btnText.textContent = 'Quản Trị';
+                        } else {
+                            btnIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>`;
+                            if (btnText) btnText.textContent = 'Đăng Nhập';
+                        }
+                    }
                 } else {
                     adminBtn.classList.add('hidden');
                 }
             }
 
+            // 2. Nút In thiệp & Tải ảnh
             const downloadBtn = document.getElementById('btn-download-image');
             const printBtn = document.getElementById('btn-print-invitation');
             if (downloadBtn && printBtn) {
@@ -545,7 +789,7 @@
             }
         }
 
-        // --- Logic Bảng Tạo Link Mời (Link Generator) ---
+        // --- Logic Điều Khiển Modal và Auth ---
         const modal = document.getElementById('admin-modal');
         const modalContent = document.getElementById('admin-modal-content');
         const toast = document.getElementById('toast');
@@ -557,6 +801,14 @@
             
             modalContent.classList.remove('translate-y-8');
             modalContent.classList.add('translate-y-0');
+
+            const isLoggedIn = safeStorage.getItem('isAdminLoggedIn') === 'true';
+            if (isLoggedIn) {
+                showDashboard();
+            } else {
+                document.getElementById('admin-dashboard-panel').classList.add('hidden');
+                document.getElementById('admin-login-panel').classList.remove('hidden');
+            }
         }
 
         function closeAdminModal() {
@@ -567,15 +819,352 @@
             modalContent.classList.remove('translate-y-0');
             modalContent.classList.add('translate-y-8');
             
-            // Reset input preview
+            // Đặt lại các thông báo ẩn
             document.getElementById('preview-container').classList.add('hidden');
-            const btnGen = document.getElementById('btn-generate');
-            btnGen.innerHTML = '<span>Tạo & Copy Link Mời</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
         }
 
+        function handleLogin() {
+            const user = document.getElementById('admin-username-input').value.trim();
+            const pwd = document.getElementById('admin-password-input').value;
+            if (user === 'PhucKhang' && pwd === 'khang1412') {
+                safeStorage.setItem('isAdminLoggedIn', 'true');
+                showDashboard();
+                initInvitation(); // Cập nhật lại nút góc màn hình
+                showToast('Xác thực thành công! Đã mở bảng quản trị.');
+                document.getElementById('admin-username-input').value = '';
+                document.getElementById('admin-password-input').value = '';
+            } else {
+                showToast('Tài khoản hoặc mật khẩu không chính xác!');
+            }
+        }
+
+        function handleLogout() {
+            safeStorage.removeItem('isAdminLoggedIn');
+            document.getElementById('admin-dashboard-panel').classList.add('hidden');
+            document.getElementById('admin-login-panel').classList.remove('hidden');
+            initInvitation(); // Khóa lại nút góc màn hình
+            showToast('Đã đăng xuất!');
+        }
+
+        function showDashboard() {
+            document.getElementById('admin-login-panel').classList.add('hidden');
+            document.getElementById('admin-dashboard-panel').classList.remove('hidden');
+            
+            switchTab('guests'); // Mặc định mở Tab khách mời
+            renderGroupOptions(); // Nạp danh sách nhóm quan hệ vào select
+            renderGuestsTable(); // Nạp danh sách khách vào bảng
+        }
+
+        function switchTab(tab) {
+            const tabGuests = document.getElementById('tab-guests');
+            const tabTemplates = document.getElementById('tab-templates');
+            const btnGuests = document.getElementById('tab-guests-btn');
+            const btnTemplates = document.getElementById('tab-templates-btn');
+            
+            if (tab === 'guests') {
+                tabGuests.classList.remove('hidden');
+                tabTemplates.classList.add('hidden');
+                btnGuests.className = "py-2.5 px-4 font-semibold text-sm border-b-2 border-brand-primary text-brand-primary -mb-px transition-all";
+                btnTemplates.className = "py-2.5 px-4 font-medium text-sm text-gray-500 border-b-2 border-transparent hover:text-brand-primary transition-all";
+            } else {
+                tabGuests.classList.add('hidden');
+                tabTemplates.classList.remove('hidden');
+                btnGuests.className = "py-2.5 px-4 font-medium text-sm text-gray-500 border-b-2 border-transparent hover:text-brand-primary transition-all";
+                btnTemplates.className = "py-2.5 px-4 font-semibold text-sm border-b-2 border-brand-primary text-brand-primary -mb-px transition-all";
+                
+                loadTemplateToEditor(); // Tải mẫu lời chúc lên biên tập
+            }
+        }
+
+        // --- Logic CRUD Khách Mời (Guests Tab) ---
+        function renderGroupOptions() {
+            const selectForm = document.getElementById('guest-group');
+            const selectEditor = document.getElementById('template-select');
+            
+            if (selectForm) {
+                selectForm.innerHTML = '';
+                Object.keys(INVITATION_TEMPLATES).forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = INVITATION_TEMPLATES[key].name || key;
+                    selectForm.appendChild(option);
+                });
+            }
+            
+            if (selectEditor) {
+                selectEditor.innerHTML = '';
+                Object.keys(INVITATION_TEMPLATES).forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = INVITATION_TEMPLATES[key].name || key;
+                    selectEditor.appendChild(option);
+                });
+            }
+        }
+
+        function addGuestToList() {
+            const nameInput = document.getElementById('guest-name');
+            const groupSelect = document.getElementById('guest-group');
+            if (!nameInput || !groupSelect) return;
+
+            const nameVal = nameInput.value.trim();
+            const groupVal = groupSelect.value;
+            
+            if (!nameVal) {
+                showToast('Vui lòng nhập tên khách mời!');
+                return;
+            }
+            
+            // Xây dựng URL
+            const currentBase = window.location.href.split('?')[0];
+            const params = new URLSearchParams();
+            params.append('name', nameVal);
+            params.append('group', groupVal);
+            const finalUrl = `${currentBase}?${params.toString()}`;
+            
+            // Thêm vào database local
+            const newGuest = {
+                id: Date.now().toString(),
+                name: nameVal,
+                group: groupVal,
+                url: finalUrl
+            };
+            
+            GUESTS_LIST.unshift(newGuest);
+            safeStorage.setItem('guestsList', JSON.stringify(GUESTS_LIST));
+            
+            renderGuestsTable();
+            
+            // Cập nhật khung preview và copy
+            const previewInput = document.getElementById('guest-link-preview');
+            if (previewInput) {
+                previewInput.value = finalUrl;
+                document.getElementById('preview-container').classList.remove('hidden');
+            }
+            
+            // Xem thử trực tiếp
+            updateCardPreview(nameVal, groupVal);
+            
+            navigator.clipboard.writeText(finalUrl)
+                .then(() => {
+                    showToast(`Đã thêm & copy link cho ${nameVal}!`);
+                    nameInput.value = '';
+                })
+                .catch(() => {
+                    showToast(`Đã thêm khách mời ${nameVal}!`);
+                    nameInput.value = '';
+                });
+        }
+
+        function renderGuestsTable() {
+            const tbody = document.getElementById('guests-table-body');
+            const countEl = document.getElementById('guests-count');
+            
+            if (countEl) countEl.textContent = GUESTS_LIST.length;
+            if (!tbody) return;
+            
+            if (GUESTS_LIST.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500 italic">Chưa có khách mời nào được tạo.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            GUESTS_LIST.forEach(guest => {
+                const groupName = INVITATION_TEMPLATES[guest.group] ? INVITATION_TEMPLATES[guest.group].name : guest.group;
+                
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-white/20 transition-colors border-b border-brand-secondary/5";
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-brand-primary">${guest.name}</td>
+                    <td class="p-3"><span class="bg-brand-secondary/15 text-brand-primary px-2.5 py-0.5 rounded-full text-[10px] font-medium border border-brand-secondary/25">${groupName}</span></td>
+                    <td class="p-3 text-right space-x-1.5 whitespace-nowrap">
+                        <button onclick="copyGuestLink('${guest.url}')" class="bg-brand-primary hover:bg-opacity-90 text-white p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" title="Copy Link Mời">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        </button>
+                        <button onclick="downloadGuestCardImage('${guest.name}', '${guest.group}')" class="bg-brand-secondary hover:bg-opacity-95 text-brand-primary p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" title="Tải Ảnh Thiệp">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </button>
+                        <button onclick="deleteGuest('${guest.id}')" class="bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-lg inline-flex items-center justify-center transition-colors" title="Xóa Khách">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function copyGuestLink(url) {
+            navigator.clipboard.writeText(url)
+                .then(() => showToast('Đã copy link mời khách!'))
+                .catch(() => showToast('Không thể tự động copy. Hãy tự sao chép.'));
+        }
+
+        function deleteGuest(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa khách mời này khỏi danh sách?')) {
+                GUESTS_LIST = GUESTS_LIST.filter(g => g.id !== id);
+                safeStorage.setItem('guestsList', JSON.stringify(GUESTS_LIST));
+                renderGuestsTable();
+                showToast('Đã xóa khách mời!');
+            }
+        }
+
+        function downloadGuestCardImage(name, group) {
+            // Cập nhật xem trước cho khách đó
+            updateCardPreview(name, group);
+            // Kích hoạt chụp ảnh
+            setTimeout(() => {
+                downloadCardAsImage();
+            }, 150);
+        }
+
+        function resetToDefaultCard() {
+            const nameInput = document.getElementById('guest-name');
+            const groupSelect = document.getElementById('guest-group');
+            if (nameInput) nameInput.value = '';
+            if (groupSelect) groupSelect.value = 'banbe';
+            
+            updateCardPreview('', 'a309');
+            document.getElementById('preview-container').classList.add('hidden');
+            showToast('Đã khôi phục thiệp mặc định!');
+        }
+
+        // --- Logic CRUD Lời chúc & Nhóm quan hệ (Templates Tab) ---
+        function loadTemplateToEditor() {
+            const selectEditor = document.getElementById('template-select');
+            if (!selectEditor) return;
+
+            const key = selectEditor.value;
+            const template = INVITATION_TEMPLATES[key];
+            if (!template) return;
+            
+            document.getElementById('editor-group-name').value = template.name || key;
+            document.getElementById('editor-template-title').value = template.title || '';
+            document.getElementById('editor-template-message').value = template.message || '';
+            
+            // Ẩn nút xóa đối với các nhóm hệ thống mặc định
+            const deleteBtn = document.getElementById('btn-delete-group');
+            const isSystemGroup = ['a309', 'cuua309', 'giadinh', 'dongho', 'nguoiyeu', 'banbe', 'thayco', 'khac'].includes(key);
+            if (deleteBtn) {
+                if (isSystemGroup) {
+                    deleteBtn.classList.add('hidden');
+                } else {
+                    deleteBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        function saveTemplateChanges() {
+            const key = document.getElementById('template-select').value;
+            if (!key || !INVITATION_TEMPLATES[key]) return;
+            
+            const newName = document.getElementById('editor-group-name').value.trim();
+            const newTitle = document.getElementById('editor-template-title').value.trim();
+            const newMessage = document.getElementById('editor-template-message').value.trim();
+            
+            if (!newName || !newTitle || !newMessage) {
+                showToast('Vui lòng nhập đầy đủ các trường thông tin mẫu!');
+                return;
+            }
+            
+            INVITATION_TEMPLATES[key].name = newName;
+            INVITATION_TEMPLATES[key].title = newTitle;
+            INVITATION_TEMPLATES[key].titleFallback = newTitle.replace(/{name}/g, '').trim();
+            INVITATION_TEMPLATES[key].message = newMessage;
+            
+            safeStorage.setItem('customTemplates', JSON.stringify(INVITATION_TEMPLATES));
+            
+            renderGroupOptions();
+            document.getElementById('template-select').value = key;
+            loadTemplateToEditor();
+            
+            // Cập nhật lại thiệp nếu đang xem trước nhóm vừa sửa
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentGroup = urlParams.get('group') || 'a309';
+            if (currentGroup === key) {
+                updateCardPreview(urlParams.get('name'), key);
+            }
+            
+            showToast('Đã cập nhật câu chúc thành công!');
+        }
+
+        function toggleNewGroupForm(show) {
+            const form = document.getElementById('new-group-form');
+            if (!form) return;
+            
+            if (show === undefined) {
+                form.classList.toggle('hidden');
+            } else if (show) {
+                form.classList.remove('hidden');
+            } else {
+                form.classList.add('hidden');
+            }
+        }
+
+        function createNewGroupSubmit() {
+            const idVal = document.getElementById('new-group-id').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+            const nameVal = document.getElementById('new-group-name').value.trim();
+            const titleVal = document.getElementById('new-group-title').value.trim();
+            const msgVal = document.getElementById('new-group-message').value.trim();
+            
+            if (!idVal || !nameVal || !titleVal || !msgVal) {
+                showToast('Vui lòng điền đầy đủ thông tin nhóm mới!');
+                return;
+            }
+            
+            if (INVITATION_TEMPLATES[idVal]) {
+                showToast('Mã nhóm đã tồn tại! Vui lòng chọn mã khác.');
+                return;
+            }
+            
+            INVITATION_TEMPLATES[idVal] = {
+                name: nameVal,
+                title: titleVal,
+                titleFallback: titleVal.replace(/{name}/g, '').trim(),
+                message: msgVal
+            };
+            
+            safeStorage.setItem('customTemplates', JSON.stringify(INVITATION_TEMPLATES));
+            
+            // Reset fields
+            document.getElementById('new-group-id').value = '';
+            document.getElementById('new-group-name').value = '';
+            document.getElementById('new-group-title').value = '';
+            document.getElementById('new-group-message').value = '';
+            
+            toggleNewGroupForm(false);
+            renderGroupOptions();
+            
+            // Mở nhóm mới trong editor
+            document.getElementById('template-select').value = idVal;
+            loadTemplateToEditor();
+            
+            showToast(`Đã thêm nhóm mới "${nameVal}" thành công!`);
+        }
+
+        function deleteCustomGroup() {
+            const key = document.getElementById('template-select').value;
+            if (!key) return;
+            
+            const isSystemGroup = ['a309', 'cuua309', 'giadinh', 'dongho', 'nguoiyeu', 'banbe', 'thayco', 'khac'].includes(key);
+            if (isSystemGroup) {
+                showToast('Không thể xóa nhóm hệ thống mặc định!');
+                return;
+            }
+            
+            if (confirm(`Bạn chắc chắn muốn xóa vĩnh viễn mối quan hệ "${INVITATION_TEMPLATES[key].name}"?`)) {
+                delete INVITATION_TEMPLATES[key];
+                safeStorage.setItem('customTemplates', JSON.stringify(INVITATION_TEMPLATES));
+                
+                renderGroupOptions();
+                loadTemplateToEditor();
+                showToast('Đã xóa nhóm thành công.');
+            }
+        }
+
+        // --- Logic phụ trợ: Toast và Sao chép đường dẫn ---
         function showToast(message) {
             const toastMsg = document.getElementById('toast-message');
-            toastMsg.textContent = message;
+            if (toastMsg) toastMsg.textContent = message;
             
             toast.classList.remove('pointer-events-none', 'opacity-0', 'translate-y-10');
             toast.classList.add('opacity-100', 'translate-y-0');
@@ -586,85 +1175,20 @@
             }, 2500);
         }
 
-        function generateAndCopyLink() {
-            const nameVal = document.getElementById('guest-name').value.trim();
-            const groupVal = document.getElementById('guest-group').value;
-
-            // Lấy base URL không có query params
-            const currentBase = window.location.href.split('?')[0];
-            
-            // Tạo URL mới
-            const params = new URLSearchParams();
-            if (nameVal) params.append('name', nameVal);
-            if (groupVal) params.append('group', groupVal);
-            
-            const queryString = params.toString();
-            const finalUrl = queryString ? `${currentBase}?${queryString}` : currentBase;
-
-            const previewInput = document.getElementById('guest-link-preview');
-            previewInput.value = finalUrl;
-            document.getElementById('preview-container').classList.remove('hidden');
-
-            // Cập nhật trực tiếp nội dung thiệp trên trang để chủ thiệp xem trước và tải ảnh!
-            updateCardPreview(nameVal, groupVal);
-
-            navigator.clipboard.writeText(finalUrl)
-                .then(() => {
-                    showToast('Đã copy link và cập nhật ảnh thiệp!');
-                    
-                    const btnGen = document.getElementById('btn-generate');
-                    btnGen.innerHTML = '<span>Đã Copy! ✓</span>';
-                    btnGen.classList.add('bg-green-600');
-                    
-                    setTimeout(() => {
-                        btnGen.innerHTML = '<span>Tạo & Copy Link</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
-                        btnGen.classList.remove('bg-green-600');
-                    }, 2000);
-                })
-                .catch(err => {
-                    console.error('Lỗi sao chép:', err);
-                    showToast('Có lỗi xảy ra, hãy copy thủ công link bên dưới.');
-                });
-        }
-
-        // Hàm đặt lại thiệp về giao diện mặc định
-        function resetToDefaultCard() {
-            document.getElementById('guest-name').value = '';
-            document.getElementById('guest-group').value = 'banbe';
-            
-            // Đặt lại thiệp về phòng A309 mặc định
-            updateCardPreview('', 'a309');
-            
-            // Ẩn khung preview link
-            document.getElementById('preview-container').classList.add('hidden');
-            
-            showToast('Đã khôi phục thiệp mặc định!');
-        }
-
         function copyToClipboardOnly() {
             const previewInput = document.getElementById('guest-link-preview');
-            navigator.clipboard.writeText(previewInput.value)
-                .then(() => {
-                    showToast('Đã copy lại link!');
-                });
+            if (previewInput) {
+                navigator.clipboard.writeText(previewInput.value)
+                    .then(() => showToast('Đã sao chép link mời!'));
+            }
         }
 
-        // Lắng nghe click ngoài modal để đóng
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeAdminModal();
-            }
-        });
-
-        // Hàm tải ảnh thiệp về máy (sử dụng html2canvas)
+        // --- Logic Tải ảnh thiệp (html2canvas) ---
         function downloadCardAsImage() {
             const card = document.querySelector('main.glass-card');
             if (!card) return;
 
-            // Lấy tất cả các phần tử không muốn xuất hiện trên ảnh tải về
             const noPrintElements = card.querySelectorAll('.no-print');
-            
-            // Ẩn tạm thời để hình ảnh thiệp gọn gàng và tinh tế
             noPrintElements.forEach(el => {
                 el.dataset.originalDisplay = el.style.display;
                 el.style.display = 'none';
@@ -672,25 +1196,22 @@
 
             showToast('Đang tạo ảnh thiệp...');
 
-            // Chờ giao diện cập nhật lại kích thước (reflow)
             setTimeout(() => {
                 html2canvas(card, {
-                    scale: 3, // Độ phân giải siêu cao 3x để in/chia sẻ siêu sắc nét
+                    scale: 3,
                     useCORS: true,
-                    backgroundColor: '#fdfbf7', // Đảm bảo màu nền thiệp đồng nhất
+                    backgroundColor: '#fdfbf7',
                     logging: false,
                     allowTaint: true,
                     onclone: (clonedDoc) => {
                         const clonedCard = clonedDoc.querySelector('main.glass-card');
                         if (clonedCard) {
-                            // Tắt và gỡ bỏ hoàn toàn CSS animations để tránh bị mờ do opacity/transform đang chạy nửa chừng
                             clonedCard.classList.remove('animate-fade-in');
                             clonedCard.style.animation = 'none';
                             clonedCard.style.transition = 'none';
                             clonedCard.style.opacity = '1';
                             clonedCard.style.transform = 'none';
 
-                            // Áp dụng tương tự cho toàn bộ phần tử con bên trong
                             const allElements = clonedCard.querySelectorAll('*');
                             allElements.forEach(el => {
                                 el.classList.remove('animate-fade-in', 'animate-slide-up', 'pulse-slow');
@@ -698,24 +1219,21 @@
                                 el.style.transition = 'none';
                                 el.style.transform = 'none';
                                 
-                                // Khôi phục hiển thị đầy đủ (không bị mờ)
                                 if (el.style.opacity !== '0' && !el.classList.contains('no-print')) {
                                     el.style.opacity = '1';
                                 }
                             });
 
-                            // Khắc phục lỗi html2canvas không vẽ được gradient-clip text (chữ nhũ vàng bị biến mất hoặc mờ)
                             const goldTexts = clonedCard.querySelectorAll('.gold-text');
                             goldTexts.forEach(el => {
                                 el.style.webkitBackgroundClip = 'initial';
                                 el.style.webkitTextFillColor = 'initial';
                                 el.style.background = 'none';
-                                el.style.color = '#c5a059'; // Sử dụng màu vàng đồng của thương hiệu làm màu chữ
+                                el.style.color = '#c5a059';
                             });
                         }
                     }
                 }).then(canvas => {
-                    // Khôi phục hiển thị cho trang web
                     noPrintElements.forEach(el => {
                         el.style.display = el.dataset.originalDisplay || '';
                     });
