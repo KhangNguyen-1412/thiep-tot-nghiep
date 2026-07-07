@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Mời Lễ Tốt Nghiệp</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Load Canvas Confetti for celebration effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#fdfbf7',
+                            primary: '#1a365d',
+                            secondary: '#c5a059',
+                            accent: '#e2e8f0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        script: ['Dancing Script', 'cursive']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1.5s ease-out',
+                        'slide-up': 'slideUp 1s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles that are hard to achieve with utility classes alone */
+        body {
+            background-color: #fdfbf7;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23c5a059" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .gold-text {
+            background: linear-gradient(135deg, #c5a059 0%, #e6c887 50%, #c5a059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .decorative-border {
+            position: relative;
+        }
+        .decorative-border::before,
+        .decorative-border::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 1px;
+            background-color: #c5a059;
+            top: 50%;
+        }
+        .decorative-border::before { left: -60px; }
+        .decorative-border::after { right: -60px; }
+
+        @media (max-width: 640px) {
+            .decorative-border::before,
+            .decorative-border::after {
+                width: 20px;
+            }
+            .decorative-border::before { left: -30px; }
+            .decorative-border::after { right: -30px; }
+        }
+    </style>
+</head>
+
+<body class="font-sans text-brand-primary min-h-screen flex flex-col justify-center items-center p-4 sm:p-8">
+
+    <!-- Lớp phủ trang trí ở góc -->
+    <div class="fixed top-0 left-0 w-32 h-32 sm:w-64 sm:h-64 pointer-events-none opacity-20">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full fill-brand-secondary transform -rotate-45 -translate-x-1/2 -translate-y-1/2">
+            <path d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.1,-46.3C90.3,-33.5,95.8,-18,95.3,-2.8C94.8,12.4,88.2,27.3,78.2,39.3C68.2,51.3,54.8,60.4,40.4,66.5C26,72.6,10.6,75.7,-4.4,81.3C-19.4,86.9,-34,95,-46.1,89.5C-58.2,84,-67.8,64.9,-75.4,47.8C-83,30.7,-88.6,15.3,-89.1,-0.3C-89.6,-15.9,-85,-31.8,-76,-45.4C-67,-59,-53.6,-70.3,-39,-77.3C-24.4,-84.3,-8.6,-87,7.1,-84.5C22.8,-82.1,30.5,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
+        </svg>
+    </div>
+    <div class="fixed bottom-0 right-0 w-32 h-32 sm:w-64 sm:h-64 pointer-events-none opacity-20">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full fill-brand-secondary transform rotate-45 translate-x-1/2 translate-y-1/2">
+            <path d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.1,-46.3C90.3,-33.5,95.8,-18,95.3,-2.8C94.8,12.4,88.2,27.3,78.2,39.3C68.2,51.3,54.8,60.4,40.4,66.5C26,72.6,10.6,75.7,-4.4,81.3C-19.4,86.9,-34,95,-46.1,89.5C-58.2,84,-67.8,64.9,-75.4,47.8C-83,30.7,-88.6,15.3,-89.1,-0.3C-89.6,-15.9,-85,-31.8,-76,-45.4C-67,-59,-53.6,-70.3,-39,-77.3C-24.4,-84.3,-8.6,-87,7.1,-84.5C22.8,-82.1,30.5,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
+        </svg>
+    </div>
+
+    <main class="glass-card w-full max-w-3xl rounded-3xl p-6 sm:p-12 relative z-10 overflow-hidden animate-fade-in">
+        
+        <!-- Icon mũ cử nhân -->
+        <div class="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+            <svg class="w-32 h-32 text-brand-primary" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z"/>
+            </svg>
+        </div>
+
+        <div class="text-center space-y-8 animate-slide-up">
+            
+            <!-- Phần tiêu đề -->
+            <header class="space-y-4">
+                <p class="text-brand-secondary tracking-widest uppercase text-sm font-semibold">Trân trọng kính mời</p>
+                <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
+                    <span class="block text-brand-primary mb-2">Đến Dự</span>
+                    <span class="gold-text">Lễ Tốt Nghiệp</span>
+                </h1>
+                <p class="font-script text-3xl sm:text-4xl text-brand-primary mt-4">của Phúc Khang</p>
+            </header>
+
+            <!-- Lời mời -->
+            <div class="py-6 border-y border-brand-secondary/20 my-8">
+                <h2 class="text-2xl font-serif text-brand-primary font-bold mb-4">Gửi Anh Em Phòng Ký Túc Xá A309,</h2>
+                <p class="text-lg sm:text-xl leading-relaxed text-gray-700 italic px-4">
+                    "Bốn năm đại học trôi qua nhanh như một cái chớp mắt, và cuối cùng thì ngày này cũng đến.<br class="hidden sm:block"> 
+                    Cảm ơn anh em đã cùng ăn, cùng ngủ, cùng 'cày' game và 'gánh' tui qua những kỳ thi sinh tử.<br class="hidden sm:block">
+                    Đến chung vui cùng tui trong ngày trọng đại này nhé! Sự hiện diện của anh em là món quà tuyệt vời nhất."
+                </p>
+            </div>
+
+            <!-- Thông tin chi tiết -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left max-w-2xl mx-auto">
+                
+                <!-- Thời gian -->
+                <div class="flex items-start space-x-4 bg-white/50 p-6 rounded-2xl border border-brand-secondary/10 hover:border-brand-secondary/30 transition-colors shadow-sm">
+                    <div class="bg-brand-secondary/10 p-3 rounded-full text-brand-secondary">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-serif font-bold text-xl mb-1">Thời Gian</h3>
+                        <p class="text-gray-800 text-lg">07g30 Sáng</p>
+                        <p class="text-brand-secondary font-medium">Thứ Sáu, 24/07/2026</p>
+                    </div>
+                </div>
+
+                <!-- Địa điểm -->
+                <div class="flex items-start space-x-4 bg-white/50 p-6 rounded-2xl border border-brand-secondary/10 hover:border-brand-secondary/30 transition-colors shadow-sm">
+                    <div class="bg-brand-secondary/10 p-3 rounded-full text-brand-secondary">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-serif font-bold text-xl mb-1">Địa Điểm</h3>
+                        <p class="text-gray-800 text-lg">Hội Trường B</p>
+                        <p class="text-brand-secondary text-sm mt-1">(Vui lòng có mặt đúng giờ để ổn định chỗ ngồi nhé)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đồng hồ đếm ngược -->
+            <div class="mt-12 pt-8">
+                <p class="inline-block font-serif text-lg font-medium decorative-border mb-6 text-brand-primary">
+                    Chỉ còn
+                </p>
+                <div id="countdown" class="flex justify-center space-x-4 sm:space-x-6">
+                    <!-- Sẽ được điền bởi JavaScript -->
+                </div>
+            </div>
+
+            <!-- Nút tương tác -->
+            <div class="mt-10 pt-4">
+                 <button onclick="fireConfetti()" class="bg-brand-primary hover:bg-opacity-90 text-white font-medium py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl active:scale-95 flex items-center mx-auto space-x-2">
+                    <span>Cùng Chúc Mừng Nhé!</span>
+                    <span>🎉</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Set the date we're counting down to
+        // Lễ tốt nghiệp: 07:30 ngày 24/07/2026
+        const graduationDate = new Date("Jul 24, 2026 07:30:00").getTime();
+
+        function updateCountdown() {
+            // Get today's date and time
+            const now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            const distance = graduationDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Construct HTML
+            let html = '';
+            
+            if (distance < 0) {
+                html = '<div class="text-2xl font-serif text-brand-secondary font-bold pulse-slow">Lễ Tốt Nghiệp Đang Diễn Ra!</div>';
+                // Stop timer if event passed
+                clearInterval(timerInterval);
+            } else {
+                html = `
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-brand-primary rounded-xl flex items-center justify-center text-white text-2xl sm:text-3xl font-bold font-serif shadow-md mb-2">
+                            ${days}
+                        </div>
+                        <span class="text-xs sm:text-sm uppercase font-semibold text-gray-500">Ngày</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-brand-primary rounded-xl flex items-center justify-center text-white text-2xl sm:text-3xl font-bold font-serif shadow-md mb-2">
+                            ${hours.toString().padStart(2, '0')}
+                        </div>
+                        <span class="text-xs sm:text-sm uppercase font-semibold text-gray-500">Giờ</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-brand-primary rounded-xl flex items-center justify-center text-white text-2xl sm:text-3xl font-bold font-serif shadow-md mb-2">
+                            ${minutes.toString().padStart(2, '0')}
+                        </div>
+                        <span class="text-xs sm:text-sm uppercase font-semibold text-gray-500">Phút</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-brand-primary rounded-xl flex items-center justify-center text-white text-2xl sm:text-3xl font-bold font-serif shadow-md mb-2">
+                            ${seconds.toString().padStart(2, '0')}
+                        </div>
+                        <span class="text-xs sm:text-sm uppercase font-semibold text-gray-500">Giây</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById("countdown").innerHTML = html;
+        }
+
+        // Run immediately then update every second
+        updateCountdown();
+        const timerInterval = setInterval(updateCountdown, 1000);
+
+        // Confetti effect function
+        function fireConfetti() {
+            var duration = 3000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                // since particles fall down, start a bit higher than random
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    colors: ['#1a365d', '#c5a059', '#ffffff']
+                }));
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#1a365d', '#c5a059', '#ffffff']
+                }));
+            }, 250);
+        }
+        
+        // Auto fire a small burst on load after a slight delay
+        setTimeout(() => {
+           confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#1a365d', '#c5a059']
+            });
+        }, 1500);
+    </script>
+</body>
+</html>
