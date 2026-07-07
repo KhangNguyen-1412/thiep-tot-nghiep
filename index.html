@@ -311,12 +311,15 @@
                     </select>
                 </div>
 
-                <div class="pt-2">
-                    <button onclick="generateAndCopyLink()" id="btn-generate" class="w-full bg-brand-primary hover:bg-opacity-95 text-white font-medium py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center space-x-2">
-                        <span>Tạo & Copy Link Mời</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <div class="pt-2 flex space-x-2">
+                    <button onclick="generateAndCopyLink()" id="btn-generate" class="flex-1 bg-brand-primary hover:bg-opacity-95 text-white font-medium py-3 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center space-x-1.5 text-sm">
+                        <span>Tạo & Copy Link</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                         </svg>
+                    </button>
+                    <button onclick="resetToDefaultCard()" class="bg-transparent hover:bg-brand-secondary/15 text-brand-secondary border border-brand-secondary/40 font-medium py-3 px-4 rounded-xl transition-all active:scale-95 text-sm">
+                        Đặt Lại
                     </button>
                 </div>
 
@@ -478,13 +481,8 @@
             }
         };
 
-        // Hàm khởi tạo và cá nhân hóa thiệp mời từ URL
-        function initInvitation() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const name = urlParams.get('name');
-            const group = urlParams.get('group');
-            const isAdmin = urlParams.get('admin') === 'true';
-
+        // Hàm cập nhật trực tiếp nội dung thiệp trên trang (để preview và in/tải ảnh)
+        function updateCardPreview(name, group) {
             let selectedGroup = 'a309';
             if (group && INVITATION_TEMPLATES[group]) {
                 selectedGroup = group;
@@ -509,6 +507,17 @@
             if (messageEl) {
                 messageEl.innerHTML = template.message;
             }
+        }
+
+        // Hàm khởi tạo và cá nhân hóa thiệp mời từ URL
+        function initInvitation() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            const group = urlParams.get('group');
+            const isAdmin = urlParams.get('admin') === 'true';
+
+            // Cập nhật nội dung thiệp ban đầu
+            updateCardPreview(name, group);
 
             // Ẩn/Hiện nút Admin Panel, nút Tải ảnh và In thiệp (chỉ hiện khi xem admin/owner, ẩn khi gửi cho khách)
             const hasPersonalization = name || group;
@@ -596,16 +605,19 @@
             previewInput.value = finalUrl;
             document.getElementById('preview-container').classList.remove('hidden');
 
+            // Cập nhật trực tiếp nội dung thiệp trên trang để chủ thiệp xem trước và tải ảnh!
+            updateCardPreview(nameVal, groupVal);
+
             navigator.clipboard.writeText(finalUrl)
                 .then(() => {
-                    showToast('Đã copy link mời!');
+                    showToast('Đã copy link và cập nhật ảnh thiệp!');
                     
                     const btnGen = document.getElementById('btn-generate');
                     btnGen.innerHTML = '<span>Đã Copy! ✓</span>';
                     btnGen.classList.add('bg-green-600');
                     
                     setTimeout(() => {
-                        btnGen.innerHTML = '<span>Tạo & Copy Link Mời</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
+                        btnGen.innerHTML = '<span>Tạo & Copy Link</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
                         btnGen.classList.remove('bg-green-600');
                     }, 2000);
                 })
@@ -613,6 +625,20 @@
                     console.error('Lỗi sao chép:', err);
                     showToast('Có lỗi xảy ra, hãy copy thủ công link bên dưới.');
                 });
+        }
+
+        // Hàm đặt lại thiệp về giao diện mặc định
+        function resetToDefaultCard() {
+            document.getElementById('guest-name').value = '';
+            document.getElementById('guest-group').value = 'banbe';
+            
+            // Đặt lại thiệp về phòng A309 mặc định
+            updateCardPreview('', 'a309');
+            
+            // Ẩn khung preview link
+            document.getElementById('preview-container').classList.add('hidden');
+            
+            showToast('Đã khôi phục thiệp mặc định!');
         }
 
         function copyToClipboardOnly() {
