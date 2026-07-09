@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hành Trình 4 Năm Đại Học - Nguyễn Huỳnh Phúc Khang</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon-QiYeJVth.svg">
+    <!-- Load Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+    
+    <!-- Load pdf.js for page-flipping book -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+    
+    <style>
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 8s linear infinite;
+        }
+        /* 3D Book Flip Styles */
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .page-right-style {
+            border-radius: 4px 24px 24px 4px;
+            box-shadow: 2px 2px 0 #fcfcfc, 4px 4px 0 #e5e5e5, 6px 6px 0 #fcfcfc, 8px 8px 12px rgba(0,0,0,0.18);
+        }
+        .page-left-style {
+            border-radius: 24px 4px 4px 24px;
+            box-shadow: -2px 2px 0 #fcfcfc, -4px 4px 0 #e5e5e5, -6px 6px 0 #fcfcfc, -8px 8px 12px rgba(0,0,0,0.18);
+        }
+        .sheet-flip-forward {
+            animation: flip-forward 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        .sheet-flip-backward {
+            animation: flip-backward 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes flip-forward {
+            0% {
+                transform: rotateY(0deg) skewY(0deg) scale(1);
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            50% {
+                transform: rotateY(-90deg) skewY(-6deg) scaleX(0.82) scaleY(1.03);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+            }
+            100% {
+                transform: rotateY(-180deg) skewY(0deg) scale(1);
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+        }
+        @keyframes flip-backward {
+            0% {
+                transform: rotateY(-180deg) skewY(0deg) scale(1);
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            50% {
+                transform: rotateY(-90deg) skewY(6deg) scaleX(0.82) scaleY(1.03);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+            }
+            100% {
+                transform: rotateY(0deg) skewY(0deg) scale(1);
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#1a365d',     // Navy cổ điển
+                            secondary: '#c5a059',   // Vàng Gold sang trọng
+                            light: '#fdfbf7',       // Kem cát nhạt
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Source Serif 4', 'serif'],
+                        serif: ['Source Serif 4', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfbf7;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(36,28%,93%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(216,40%,90%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(36,28%,93%,1) 0, transparent 50%);
+            background-attachment: fixed;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        /* Custom styles for timeline line */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 18px;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #c5a059 10%, #c5a059 90%, transparent);
+        }
+        @media(min-width: 768px) {
+            .timeline-line::before {
+                left: 50%;
+                margin-left: -1px;
+            }
+        }
+        /* Scroll reveal class */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+  <script type="module" crossorigin src="/assets/portfolio-a5rQLAgd.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+</head>
+<body class="min-h-screen text-brand-primary antialiased font-sans flex flex-col justify-between">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="w-full max-w-7xl mx-auto px-6 py-4 flex justify-between items-center z-20">
+        <a href="/index.html" class="flex items-center space-x-2 group">
+            <img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3e%3cdefs%3e%3c!--%20Background%20Gradient%20--%3e%3clinearGradient%20id='bgGrad'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3e%3cstop%20offset='0%25'%20stop-color='%231a365d'%20/%3e%3cstop%20offset='100%25'%20stop-color='%230a1829'%20/%3e%3c/linearGradient%3e%3c!--%20Gold%20Gradient%20--%3e%3clinearGradient%20id='goldGrad'%20x1='0%25'%20y1='100%25'%20x2='100%25'%20y2='0%25'%3e%3cstop%20offset='0%25'%20stop-color='%239A7B3E'%20/%3e%3cstop%20offset='30%25'%20stop-color='%23C5A059'%20/%3e%3cstop%20offset='50%25'%20stop-color='%23FDF1D6'%20/%3e%3cstop%20offset='70%25'%20stop-color='%23C5A059'%20/%3e%3cstop%20offset='100%25'%20stop-color='%239A7B3E'%20/%3e%3c/linearGradient%3e%3c!--%20Shadow%20for%20Depth%20--%3e%3cfilter%20id='dropShadow'%20x='-10%25'%20y='-10%25'%20width='120%25'%20height='120%25'%3e%3cfeDropShadow%20dx='0'%20dy='6'%20stdDeviation='5'%20flood-color='%23000000'%20flood-opacity='0.3'%20/%3e%3c/filter%3e%3c/defs%3e%3c!--%20Background%20Circle%20with%20Gold%20Border%20--%3e%3ccircle%20cx='256'%20cy='256'%20r='230'%20fill='url(%23bgGrad)'%20stroke='url(%23goldGrad)'%20stroke-width='12'%20filter='url(%23dropShadow)'%20/%3e%3c!--%20Inner%20Gold%20Circle%20(Dotted/Thin)%20for%20Elegant%20Border%20--%3e%3ccircle%20cx='256'%20cy='256'%20r='202'%20fill='none'%20stroke='url(%23goldGrad)'%20stroke-width='2'%20stroke-dasharray='8%208'%20opacity='0.5'%20/%3e%3c!--%20Graduation%20Cap%20Group%20--%3e%3cg%20filter='url(%23dropShadow)'%3e%3c!--%20Cap%20Top%20(Diamond)%20--%3e%3cpath%20d='M%20256,135%20L%20405,210%20L%20256,285%20L%20107,210%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Cap%20Base%20(Neck)%20--%3e%3cpath%20d='M%20175,248%20V%20305%20C%20175,340%20337,340%20337,305%20V%20248%20L%20256,290%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Cap%20Base%20Inner%20Detail%20(navy%20cut-out%20for%20depth)%20--%3e%3cpath%20d='M%20185,260%20V%20300%20C%20185,328%20327,328%20327,300%20V%20260%20L%20256,294%20Z'%20fill='url(%23bgGrad)'%20/%3e%3c!--%20Tassel%20String%20and%20Hanging%20Part%20--%3e%3cpath%20d='M%20256,210%20C%20290,210%20385,215%20395,245%20L%20395,315'%20fill='none'%20stroke='url(%23goldGrad)'%20stroke-width='6'%20stroke-linecap='round'%20/%3e%3c!--%20Tassel%20Brush%20--%3e%3cpath%20d='M%20387,315%20H%20403%20L%20399,355%20H%20391%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Center%20Button%20--%3e%3ccircle%20cx='256'%20cy='210'%20r='10'%20fill='url(%23goldGrad)'%20/%3e%3c/g%3e%3c!--%20Elegant%20Decorative%20Stars%20--%3e%3c!--%20Top%20Star%20--%3e%3cpath%20d='M%20256,75%20L%20260,86%20L%20271,86%20L%20262,92%20L%20265,103%20L%20256,97%20L%20247,103%20L%20250,92%20L%20241,86%20L%20252,86%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Left%20Star%20--%3e%3cpath%20d='M%20115,295%20L%20117,300%20L%20122,300%20L%20118,303%20L%20119,308%20L%20115,305%20L%20111,308%20L%20112,303%20L%20108,300%20L%20113,300%20Z'%20fill='url(%23goldGrad)'%20opacity='0.7'%20/%3e%3c!--%20Right%20Star%20--%3e%3cpath%20d='M%20397,295%20L%20399,300%20L%20404,300%20L%20400,303%20L%20401,308%20L%20397,305%20L%20393,308%20L%20394,303%20L%20390,300%20L%20395,300%20Z'%20fill='url(%23goldGrad)'%20opacity='0.7'%20/%3e%3c/svg%3e" alt="Logo" class="w-8 h-8 object-contain group-hover:rotate-12 transition-transform duration-300">
+            <span class="font-serif text-sm font-bold text-brand-primary tracking-wide">Phúc Khang's Journey</span>
+        </a>
+        <a href="/index.html" class="bg-brand-primary text-white hover:bg-opacity-95 text-xs font-semibold py-2.5 px-4 rounded-xl shadow-md transition-all active:scale-95 border border-brand-primary/20 flex items-center space-x-1">
+            <span>← Quay lại Thiệp Mời</span>
+        </a>
+    </header>
+
+    <!-- MAIN PORTFOLIO CONTENT -->
+    <main class="w-full max-w-5xl mx-auto px-6 py-8 space-y-24">
+
+        <!-- 1. HERO SECTION: PROFILE CARD -->
+        <section class="glass-card border border-brand-secondary/25 rounded-3xl p-8 sm:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12 reveal active">
+            <!-- Left: Portrait Photo -->
+            <div class="relative shrink-0 w-48 h-48 sm:w-64 sm:h-64 rounded-2xl overflow-hidden border-2 border-brand-secondary/40 shadow-xl group cursor-pointer" onclick="openLightbox('/hinh_tot_nghiep.png')">
+                <img src="/hinh_tot_nghiep.png" alt="Nguyễn Huỳnh Phúc Khang" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-primary/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span class="text-white text-xs font-semibold bg-brand-primary/80 px-3 py-1.5 rounded-full border border-brand-secondary/40 shadow-md transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">Xem chi tiết</span>
+                </div>
+            </div>
+            
+            <!-- Right: Intro text -->
+            <div class="space-y-4 text-center md:text-left flex-1">
+                <span class="text-brand-secondary text-xs sm:text-sm tracking-[0.2em] font-semibold uppercase">Graduation Portfolio</span>
+                <h1 class="font-serif text-3xl sm:text-5xl font-black text-brand-primary leading-tight">
+                    NGUYỄN HUỲNH PHÚC KHANG
+                </h1>
+                <p class="font-serif italic text-lg sm:text-xl text-brand-secondary">
+                    Cử nhân ngành Công nghệ Thông tin - Đại học Sư phạm TP.HCM
+                </p>
+                <div class="h-[1px] w-24 bg-brand-secondary/35 mx-auto md:mx-0 my-3"></div>
+                <p class="text-sm sm:text-base text-gray-700 italic leading-relaxed max-w-2xl">
+                    "Bốn năm dưới mái trường Đại học không chỉ là hành trình tích lũy tri thức, mà còn là hành trình tôi rèn luyện bản lĩnh, khám phá đam mê và tìm ra định hướng cho tương lai. Mỗi người bạn đồng hành, mỗi người thầy đứng lớp đều là một phần ký ức vô giá của thanh xuân."
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. TIMELINE: 4-YEAR JOURNEY -->
+        <section class="space-y-12">
+            <div class="text-center space-y-2 reveal">
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-brand-primary">Hành Trình 4 Năm Đại Học</h2>
+                <p class="text-xs text-brand-secondary uppercase tracking-widest font-semibold">Cột mốc đáng nhớ qua từng năm học</p>
+            </div>
+
+            <div class="relative timeline-line space-y-12 md:space-y-16">
+                <!-- Year 1 -->
+                <div class="relative flex flex-col md:flex-row items-center md:justify-between reveal">
+                    <div class="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-9 h-9 rounded-full bg-brand-primary border-4 border-brand-secondary text-white flex items-center justify-center font-bold text-xs z-10">
+                        1
+                    </div>
+                    <div class="w-full md:w-5/12 ml-12 md:ml-0 md:text-right space-y-2">
+                        <span class="text-brand-secondary font-bold text-xs">2022 - 2023</span>
+                        <h3 class="font-serif font-bold text-lg text-brand-primary">Bắt Đầu & Khám Phá</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Chính thức bước chân vào giảng đường Đại học Sư phạm TP.HCM với đầy sự bỡ ngỡ. Làm quen với các môn đại cương, thuật toán căn bản và bắt đầu hòa mình vào cuộc sống tự lập sôi động tại thành phố.
+                        </p>
+                    </div>
+                    <div class="hidden md:block w-2/12"></div>
+                    <div class="hidden md:block w-5/12"></div>
+                </div>
+
+                <!-- Year 2 -->
+                <div class="relative flex flex-col md:flex-row items-center md:justify-between reveal">
+                    <div class="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-9 h-9 rounded-full bg-brand-primary border-4 border-brand-secondary text-white flex items-center justify-center font-bold text-xs z-10">
+                        2
+                    </div>
+                    <div class="hidden md:block w-5/12"></div>
+                    <div class="hidden md:block w-2/12"></div>
+                    <div class="w-full md:w-5/12 ml-12 md:ml-0 space-y-2">
+                        <span class="text-brand-secondary font-bold text-xs">2023 - 2024</span>
+                        <h3 class="font-serif font-bold text-lg text-brand-primary">Trải Nghiệm & Thử Thách</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Đi sâu vào kiến thức chuyên ngành lập trình. Tham gia các hoạt động ngoại khóa, các câu lạc bộ học thuật và bắt đầu tham gia các đề tài nghiên cứu khoa học nhỏ cùng bạn bè, xây dựng nền tảng làm việc nhóm vững chắc.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Year 3 -->
+                <div class="relative flex flex-col md:flex-row items-center md:justify-between reveal">
+                    <div class="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-9 h-9 rounded-full bg-brand-primary border-4 border-brand-secondary text-white flex items-center justify-center font-bold text-xs z-10">
+                        3
+                    </div>
+                    <div class="w-full md:w-5/12 ml-12 md:ml-0 md:text-right space-y-2">
+                        <span class="text-brand-secondary font-bold text-xs">2024 - 2025</span>
+                        <h3 class="font-serif font-bold text-lg text-brand-primary">Định Hình & Thực Tiễn</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Bắt đầu quá trình thực tập thực tế tại doanh nghiệp công nghệ, được cọ xát với các dự án thực tế lớn. Tìm ra thế mạnh của bản thân trong mảng lập trình web và ứng dụng công nghệ hiện đại.
+                        </p>
+                    </div>
+                    <div class="hidden md:block w-2/12"></div>
+                    <div class="hidden md:block w-5/12"></div>
+                </div>
+
+                <!-- Year 4 -->
+                <div class="relative flex flex-col md:flex-row items-center md:justify-between reveal">
+                    <div class="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-9 h-9 rounded-full bg-brand-primary border-4 border-brand-secondary text-white flex items-center justify-center font-bold text-xs z-10">
+                        4
+                    </div>
+                    <div class="hidden md:block w-5/12"></div>
+                    <div class="hidden md:block w-2/12"></div>
+                    <div class="w-full md:w-5/12 ml-12 md:ml-0 space-y-2">
+                        <span class="text-brand-secondary font-bold text-xs">2025 - 2026</span>
+                        <h3 class="font-serif font-bold text-lg text-brand-primary">Trái Ngọt & Tốt Nghiệp</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Hoàn thành bài báo khoa học nghiên cứu PhoBERT công bố quốc gia và xây dựng báo cáo Hồ sơ tốt nghiệp tự đánh giá năng lực nghề nghiệp toàn diện, chuẩn bị đón nhận tấm bằng Cử nhân để sẵn sàng bước vào thị trường lao động.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. THESIS SHOWCASE -->
+        <!-- 3. GRADUATION MODULES -->
+        <section class="space-y-8 reveal">
+            <div class="text-center space-y-2">
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-brand-primary">Học Phần Tốt Nghiệp</h2>
+                <p class="text-xs text-brand-secondary uppercase tracking-widest font-semibold">Thay thế khóa luận bằng học phần quy đổi chuyên sâu</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Card 1: Nghiên cứu khoa học -->
+                <div class="glass-card border border-brand-secondary/25 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="space-y-1">
+                                <span class="bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shrink-0">Sản phẩm nghiên cứu</span>
+                                <div class="text-[10px] text-gray-500 font-medium">Tạp chí TNU</div>
+                            </div>
+                            <div class="bg-brand-secondary/15 text-brand-secondary border border-brand-secondary/35 rounded-2xl px-3 py-1.5 text-center shadow-sm shrink-0">
+                                <span class="block text-[9px] uppercase tracking-wider font-bold opacity-80 leading-none">Điểm số</span>
+                                <span class="font-serif font-black text-lg leading-none">10 / 10</span>
+                            </div>
+                        </div>
+                        <h3 class="font-serif text-lg sm:text-xl font-bold text-brand-primary leading-snug">So sánh độ tương đồng câu hỏi trong diễn đàn</h3>
+                        
+                        <div class="space-y-3 text-xs sm:text-sm text-gray-700 leading-relaxed">
+                            <p>
+                                Nghiên cứu khoa học ứng dụng mạng nơ-ron sâu <strong>PhoBERT</strong> kết hợp thư viện <strong>FAISS</strong> để nhận diện tự động và so khớp câu hỏi trùng lặp tiếng Việt trên diễn đàn trực tuyến với độ chính xác đạt <strong>82,98%</strong>.
+                            </p>
+                            <p class="text-[11px] text-gray-500 not-italic">
+                                <strong>Đồng tác giả:</strong> Võ Trần Tiến, Lương Trần Ngọc Khiết, Nguyễn Phương Nam, Huỳnh Thị Tường Vi, Nguyễn Huỳnh Phúc Khang, Phan Thị Nam Anh, Lương Trần Hy Hiến.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-brand-secondary/15 flex items-center justify-between">
+                        <span class="text-[10px] text-brand-secondary uppercase tracking-wider font-semibold">Quy đổi điểm tốt nghiệp</span>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://doi.org/10.34238/tnu-jst.12516" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1 text-xs font-semibold text-brand-secondary hover:text-brand-primary transition-colors">
+                                <span>Xem DOI</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                            <button onclick="openBookModal('/Bai_Bao_Khoa_Hoc.pdf', 'Sản phẩm nghiên cứu - Bài báo khoa học')" class="inline-flex items-center space-x-1 text-xs font-semibold text-brand-secondary hover:text-brand-primary transition-colors border-l border-brand-secondary/20 pl-3">
+                                <span>Lật Sách</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Hồ sơ tốt nghiệp -->
+                <div class="glass-card border border-brand-secondary/25 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="space-y-1">
+                                <span class="bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shrink-0">Hồ sơ tốt nghiệp</span>
+                                <div class="text-[10px] text-gray-500 font-medium">Mã số: 48.01.104.066</div>
+                            </div>
+                            <div class="bg-brand-secondary/15 text-brand-secondary border border-brand-secondary/35 rounded-2xl px-3 py-1.5 text-center shadow-sm shrink-0">
+                                <span class="block text-[9px] uppercase tracking-wider font-bold opacity-80 leading-none">Điểm số</span>
+                                <span class="font-serif font-black text-lg leading-none">10 / 10</span>
+                            </div>
+                        </div>
+                        <h3 class="font-serif text-lg sm:text-xl font-bold text-brand-primary leading-snug">Hồ sơ tự đánh giá năng lực nghề nghiệp</h3>
+                        
+                        <div class="space-y-3 text-xs sm:text-sm text-gray-700 leading-relaxed">
+                            <p>
+                                Báo cáo Hồ sơ tốt nghiệp tổng hợp, hệ thống hóa và tự đánh giá năng lực dựa trên ma trận chuẩn đầu ra <strong>(PLOs 7, 8, 9, 10)</strong> từ Khoa CNTT - ĐH Sư phạm TP.HCM.
+                            </p>
+                            <p>
+                                Minh chứng thực tế bao gồm dự án Khởi nghiệp EdTech (EduMap), hai đợt thực tập phát triển Web Fullstack (Nice Solutions), cấu hình tường lửa Fortinet bảo mật hạ tầng AI và tối ưu thuật toán game Python.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-brand-secondary/15 flex items-center justify-between relative group/plo">
+                        <span class="text-[10px] text-brand-secondary uppercase tracking-wider font-semibold flex items-center cursor-help">
+                            <span>Đạt chuẩn đầu ra ngành CNTT</span>
+                            <svg class="w-3.5 h-3.5 ml-1 text-brand-secondary/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </span>
+                        
+                        <button onclick="openBookModal('/Bao_Cao_Ho_So_Tot_Nghiep.pdf', 'Chuẩn đầu ra - Hồ sơ tốt nghiệp')" class="inline-flex items-center space-x-1 text-xs font-semibold text-brand-secondary hover:text-brand-primary transition-colors">
+                            <span>Lật Sách Hồ Sơ</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </button>
+                        
+                        <!-- Floating PLO details tooltip -->
+                        <div class="absolute bottom-full left-0 mb-2 w-72 bg-brand-primary text-white border border-brand-secondary/35 rounded-2xl p-4 shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover/plo:opacity-100 group-hover/plo:translate-y-0 group-hover/plo:pointer-events-auto transition-all duration-300 z-30 space-y-3 text-left">
+                            <h4 class="font-serif font-bold text-xs text-brand-secondary border-b border-brand-secondary/30 pb-1.5 uppercase tracking-wider">Ma Trận Chuẩn Đầu Ra (PLOs)</h4>
+                            <ul class="space-y-2 text-[11px] leading-relaxed text-gray-200">
+                                <li class="flex items-start space-x-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span><strong class="text-brand-secondary">PLO 7:</strong> Thực hiện được ý tưởng khởi nghiệp.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span><strong class="text-brand-secondary">PLO 8:</strong> Mô tả được về nghề nghiệp công nghệ thông tin.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span><strong class="text-brand-secondary">PLO 9:</strong> Thực hiện được hoạt động nghề nghiệp và xác định được các yêu cầu về quản lý hoạt động chuyên môn.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span><strong class="text-brand-secondary">PLO 10:</strong> Thực hiện được hoạt động nghiên cứu khoa học.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PROJECTS & ACHIEVEMENTS -->
+        <section class="space-y-12">
+            <div class="text-center space-y-2 reveal">
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-brand-primary">Thành Tích & Dự Án Tiêu Biểu</h2>
+                <p class="text-xs text-brand-secondary uppercase tracking-widest font-semibold">Những dấu ấn nổi bật khác</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal">
+                <!-- Item 1: Dự án An Hữu Schools -->
+                <div class="glass-card border border-brand-secondary/15 rounded-2xl p-6 shadow-md hover:border-brand-secondary/40 transition-all hover:scale-[1.02] duration-300 space-y-4 group relative flex flex-col justify-between min-h-[300px]">
+                    <div class="space-y-3 relative">
+                        <!-- Icon area with hover transition -->
+                        <div class="relative w-full h-12 flex items-center justify-start">
+                            <!-- Default themed School SVG Icon -->
+                            <div class="bg-brand-secondary/10 w-12 h-12 rounded-xl flex items-center justify-center text-brand-secondary">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Circular Logos Popup on Hover -->
+                        <div class="absolute -top-36 left-1/2 -translate-x-1/2 w-40 h-40 bg-white/95 rounded-full border-2 border-brand-secondary/35 shadow-2xl p-2 flex items-center justify-center opacity-0 scale-90 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible transition-all duration-300 z-30">
+                            <!-- Center label -->
+                            <div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center text-[10px] text-brand-secondary font-bold">AH</div>
+                            
+                            <!-- 4 Logos positioned radially as links -->
+                            <!-- 1. Mầm non (Top) -->
+                            <a href="https://mnah.vercel.app/" target="_blank" rel="noopener noreferrer" class="absolute top-1.5 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border border-brand-secondary/20 shadow-md overflow-hidden hover:scale-110 hover:border-brand-primary transition-transform cursor-pointer" title="Trường Mầm non An Hữu">
+                                <img src="/logo_mamnon.jpg" alt="Mầm non" class="w-full h-full object-cover">
+                            </a>
+                            <!-- 2. Tiểu học (Right) -->
+                            <a href="https://thah.vercel.app/" target="_blank" rel="noopener noreferrer" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-brand-secondary/20 shadow-md overflow-hidden hover:scale-110 hover:border-brand-primary transition-transform cursor-pointer" title="Trường Tiểu học An Hữu">
+                                <img src="/logo_tieuhoc.jpg" alt="Tiểu học" class="w-full h-full object-cover">
+                            </a>
+                            <!-- 3. THCS (Bottom) -->
+                            <a href="https://thcsanhuu.vercel.app/" target="_blank" rel="noopener noreferrer" class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border border-brand-secondary/20 shadow-md overflow-hidden hover:scale-110 hover:border-brand-primary transition-transform cursor-pointer" title="Trường THCS An Hữu">
+                                <img src="/logo_thcs.png" alt="THCS" class="w-full h-full object-cover">
+                            </a>
+                            <!-- 4. THPT (Left) -->
+                            <a href="https://thptanhuu.vercel.app/" target="_blank" rel="noopener noreferrer" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-brand-secondary/20 shadow-md overflow-hidden hover:scale-110 hover:border-brand-primary transition-transform cursor-pointer" title="Trường THPT An Hữu">
+                                <img src="/logo_thpt.jpg" alt="THPT" class="w-full h-full object-cover">
+                            </a>
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brand-primary">Cổng trường học An Hữu</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Xây dựng và triển khai đồng bộ hệ thống cổng thông tin điện tử tích hợp cho 4 trường học từ Mầm non đến THPT tại xã An Hữu.
+                        </p>
+                    </div>
+                    
+                    <!-- Footer indicator -->
+                    <div class="pt-2 border-t border-brand-secondary/10 text-center">
+                        <span class="text-[10px] text-brand-secondary italic font-semibold">👉 Rê chuột & click logo để vào trang</span>
+                    </div>
+                </div>
+
+                <!-- Item 2: Dự án Web Thiệp mời -->
+                <div class="glass-card border border-brand-secondary/15 rounded-2xl p-6 shadow-md hover:border-brand-secondary/40 transition-all hover:scale-[1.02] duration-300 space-y-4 flex flex-col justify-between min-h-[300px]">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 flex items-center justify-start">
+                            <!-- Custom Site Logo -->
+                            <img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3e%3cdefs%3e%3c!--%20Background%20Gradient%20--%3e%3clinearGradient%20id='bgGrad'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3e%3cstop%20offset='0%25'%20stop-color='%231a365d'%20/%3e%3cstop%20offset='100%25'%20stop-color='%230a1829'%20/%3e%3c/linearGradient%3e%3c!--%20Gold%20Gradient%20--%3e%3clinearGradient%20id='goldGrad'%20x1='0%25'%20y1='100%25'%20x2='100%25'%20y2='0%25'%3e%3cstop%20offset='0%25'%20stop-color='%239A7B3E'%20/%3e%3cstop%20offset='30%25'%20stop-color='%23C5A059'%20/%3e%3cstop%20offset='50%25'%20stop-color='%23FDF1D6'%20/%3e%3cstop%20offset='70%25'%20stop-color='%23C5A059'%20/%3e%3cstop%20offset='100%25'%20stop-color='%239A7B3E'%20/%3e%3c/linearGradient%3e%3c!--%20Shadow%20for%20Depth%20--%3e%3cfilter%20id='dropShadow'%20x='-10%25'%20y='-10%25'%20width='120%25'%20height='120%25'%3e%3cfeDropShadow%20dx='0'%20dy='6'%20stdDeviation='5'%20flood-color='%23000000'%20flood-opacity='0.3'%20/%3e%3c/filter%3e%3c/defs%3e%3c!--%20Background%20Circle%20with%20Gold%20Border%20--%3e%3ccircle%20cx='256'%20cy='256'%20r='230'%20fill='url(%23bgGrad)'%20stroke='url(%23goldGrad)'%20stroke-width='12'%20filter='url(%23dropShadow)'%20/%3e%3c!--%20Inner%20Gold%20Circle%20(Dotted/Thin)%20for%20Elegant%20Border%20--%3e%3ccircle%20cx='256'%20cy='256'%20r='202'%20fill='none'%20stroke='url(%23goldGrad)'%20stroke-width='2'%20stroke-dasharray='8%208'%20opacity='0.5'%20/%3e%3c!--%20Graduation%20Cap%20Group%20--%3e%3cg%20filter='url(%23dropShadow)'%3e%3c!--%20Cap%20Top%20(Diamond)%20--%3e%3cpath%20d='M%20256,135%20L%20405,210%20L%20256,285%20L%20107,210%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Cap%20Base%20(Neck)%20--%3e%3cpath%20d='M%20175,248%20V%20305%20C%20175,340%20337,340%20337,305%20V%20248%20L%20256,290%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Cap%20Base%20Inner%20Detail%20(navy%20cut-out%20for%20depth)%20--%3e%3cpath%20d='M%20185,260%20V%20300%20C%20185,328%20327,328%20327,300%20V%20260%20L%20256,294%20Z'%20fill='url(%23bgGrad)'%20/%3e%3c!--%20Tassel%20String%20and%20Hanging%20Part%20--%3e%3cpath%20d='M%20256,210%20C%20290,210%20385,215%20395,245%20L%20395,315'%20fill='none'%20stroke='url(%23goldGrad)'%20stroke-width='6'%20stroke-linecap='round'%20/%3e%3c!--%20Tassel%20Brush%20--%3e%3cpath%20d='M%20387,315%20H%20403%20L%20399,355%20H%20391%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Center%20Button%20--%3e%3ccircle%20cx='256'%20cy='210'%20r='10'%20fill='url(%23goldGrad)'%20/%3e%3c/g%3e%3c!--%20Elegant%20Decorative%20Stars%20--%3e%3c!--%20Top%20Star%20--%3e%3cpath%20d='M%20256,75%20L%20260,86%20L%20271,86%20L%20262,92%20L%20265,103%20L%20256,97%20L%20247,103%20L%20250,92%20L%20241,86%20L%20252,86%20Z'%20fill='url(%23goldGrad)'%20/%3e%3c!--%20Left%20Star%20--%3e%3cpath%20d='M%20115,295%20L%20117,300%20L%20122,300%20L%20118,303%20L%20119,308%20L%20115,305%20L%20111,308%20L%20112,303%20L%20108,300%20L%20113,300%20Z'%20fill='url(%23goldGrad)'%20opacity='0.7'%20/%3e%3c!--%20Right%20Star%20--%3e%3cpath%20d='M%20397,295%20L%20399,300%20L%20404,300%20L%20400,303%20L%20401,308%20L%20397,305%20L%20393,308%20L%20394,303%20L%20390,300%20L%20395,300%20Z'%20fill='url(%23goldGrad)'%20opacity='0.7'%20/%3e%3c/svg%3e" alt="Graduation Cap" class="w-10 h-10 object-contain">
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brand-primary">Hệ thống Thiệp mời Online</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Thiết kế và lập trình website gửi thiệp điện tử tốt nghiệp cá nhân hóa, tích hợp Google Sign-in bảo mật cho Admin, cơ sở dữ liệu Firestore và kết xuất ảnh tự động.
+                        </p>
+                    </div>
+                    
+                    <div class="pt-2 border-t border-brand-secondary/10">
+                        <a href="/index.html" class="block w-full bg-brand-primary/5 hover:bg-brand-primary/10 border border-brand-secondary/20 hover:border-brand-secondary/40 text-[10px] font-semibold text-brand-primary py-2 rounded-lg text-center transition-all">Ghé trang Thiệp mời</a>
+                    </div>
+                </div>
+
+                <!-- Item 3: Dự án quản lý điện nước ColiveOS -->
+                <div class="glass-card border border-brand-secondary/15 rounded-2xl p-6 shadow-md hover:border-brand-secondary/40 transition-all hover:scale-[1.02] duration-300 space-y-4 flex flex-col justify-between min-h-[300px]">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 flex items-center justify-start overflow-hidden rounded-xl border border-brand-secondary/20 shadow-sm bg-brand-primary/5">
+                            <!-- ColiveOS Logo -->
+                            <img src="/logo_coliveos.png" alt="ColiveOS Logo" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brand-primary">Quản lý điện nước phòng A309</h3>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Xây dựng ứng dụng web <strong>ColiveOS</strong> hỗ trợ theo dõi chỉ số công tơ, tự động tính toán hóa đơn và minh bạch tài chính nội bộ cho thành viên phòng A309.
+                        </p>
+                    </div>
+                    
+                    <div class="pt-2 border-t border-brand-secondary/10">
+                        <a href="https://coliveos.vercel.app/" target="_blank" rel="noopener noreferrer" class="block w-full bg-brand-primary/5 hover:bg-brand-primary/10 border border-brand-secondary/20 hover:border-brand-secondary/40 text-[10px] font-semibold text-brand-primary py-2 rounded-lg text-center transition-all">Ghé thăm ColiveOS</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INTERACTIVE MEMORY GALLERY -->
+        <section class="space-y-12">
+            <div class="text-center space-y-2 reveal">
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-brand-primary">Khoảnh Khắc Kỷ Niệm</h2>
+                <p class="text-xs text-brand-secondary uppercase tracking-widest font-semibold">Một vài hình ảnh đáng nhớ</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 reveal">
+                <div class="relative overflow-hidden rounded-2xl border border-brand-secondary/20 shadow-md group cursor-pointer aspect-[4/3]" onclick="openLightbox(0)">
+                    <img src="/grad_photo_1.png" alt="Khoảnh khắc tốt nghiệp" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-xs font-semibold uppercase tracking-wider bg-brand-primary/75 px-3 py-1.5 rounded-full border border-brand-secondary/30">Xem chi tiết</span>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl border border-brand-secondary/20 shadow-md group cursor-pointer aspect-[4/3]" onclick="openLightbox(1)">
+                    <img src="/grad_photo_2.png" alt="Cùng bạn bè ném mũ" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-xs font-semibold uppercase tracking-wider bg-brand-primary/75 px-3 py-1.5 rounded-full border border-brand-secondary/30">Xem chi tiết</span>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl border border-brand-secondary/20 shadow-md group cursor-pointer aspect-[4/3]" onclick="openLightbox(2)">
+                    <img src="/grad_photo_3.png" alt="Bó hoa sunflower tươi tắn" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-xs font-semibold uppercase tracking-wider bg-brand-primary/75 px-3 py-1.5 rounded-full border border-brand-secondary/30">Xem chi tiết</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ACKNOWLEDGEMENTS: LỜI TRI ÂN -->
+        <section class="space-y-12">
+            <div class="text-center space-y-2 reveal">
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-brand-primary">Lời Tri Ân Sâu Sắc</h2>
+                <p class="text-xs text-brand-secondary uppercase tracking-widest font-semibold">Gửi gắm tình cảm chân thành</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal">
+                <!-- Quote 1 -->
+                <div class="bg-white/40 border border-brand-secondary/15 rounded-3xl p-6 shadow-sm space-y-4 italic relative">
+                    <span class="absolute top-2 right-6 text-6xl text-brand-secondary/15 font-serif select-none pointer-events-none">“</span>
+                    <p class="text-xs text-gray-700 leading-relaxed pt-2">
+                        "Con cám ơn Bố Mẹ và Gia đình rất nhiều vì đã luôn là điểm tựa tinh thần vững chắc, vất vả nuôi dạy và tạo điều kiện tốt nhất để con hoàn thành chặng đường học tập ý nghĩa này."
+                    </p>
+                    <div class="h-[1px] w-12 bg-brand-secondary/35"></div>
+                    <p class="font-serif text-xs font-bold text-brand-primary not-italic">— Gửi Bố Mẹ & Gia đình</p>
+                </div>
+                <!-- Quote 2 -->
+                <div class="bg-white/40 border border-brand-secondary/15 rounded-3xl p-6 shadow-sm space-y-4 italic relative">
+                    <span class="absolute top-2 right-6 text-6xl text-brand-secondary/15 font-serif select-none pointer-events-none">“</span>
+                    <p class="text-xs text-gray-700 leading-relaxed pt-2">
+                        "Em xin gửi lời cảm ơn sâu sắc nhất tới quý Thầy Cô giảng viên trường ĐH Sư phạm TP.HCM đã tận tình dạy dỗ, chỉ bảo kiến thức quý báu và dẫn dắt em suốt 4 năm qua."
+                    </p>
+                    <div class="h-[1px] w-12 bg-brand-secondary/35"></div>
+                    <p class="font-serif text-xs font-bold text-brand-primary not-italic">— Gửi Quý Thầy Cô giáo</p>
+                </div>
+                <!-- Quote 3 -->
+                <div class="bg-white/40 border border-brand-secondary/15 rounded-3xl p-6 shadow-sm space-y-4 italic relative">
+                    <span class="absolute top-2 right-6 text-6xl text-brand-secondary/15 font-serif select-none pointer-events-none">“</span>
+                    <p class="text-xs text-gray-700 leading-relaxed pt-2">
+                        "Cám ơn anh em chiến hữu và tập thể lớp đã cùng học, cùng chơi, cùng thức đêm cày deadline đồ án và chia sẻ mọi vui buồn của những năm tháng sinh viên tươi đẹp nhất."
+                    </p>
+                    <div class="h-[1px] w-12 bg-brand-secondary/35"></div>
+                    <p class="font-serif text-xs font-bold text-brand-primary not-italic">— Gửi Anh Em & Bạn bè</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- INTERACTIVE LIGHTBOX MODAL (Phóng to ảnh) -->
+    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 no-print" onclick="closeLightbox()">
+        <!-- Close button -->
+        <button class="absolute top-6 right-6 text-white/70 hover:text-white text-3xl font-bold transition-colors" onclick="closeLightbox()">
+            &times;
+        </button>
+        <!-- Lightbox image container -->
+        <div class="max-w-[90%] max-h-[85%] overflow-hidden rounded-xl border border-brand-secondary/20 shadow-2xl relative" onclick="event.stopPropagation()">
+            <img id="lightbox-img" src="" alt="Graduation moment zoomed" class="max-w-full max-h-screen object-contain">
+        </div>
+    </div>
+
+    <!-- FOOTER SECTION -->
+    <footer class="w-full border-t border-brand-secondary/20 py-8 px-6 mt-12 bg-white/10 text-center space-y-4 z-10 no-print">
+        <!-- Return Link -->
+        <div>
+            <a href="/index.html" class="inline-flex items-center space-x-1.5 text-xs font-bold text-brand-secondary hover:text-brand-primary transition-colors">
+                <span>← Trở Về Giao Diện Thiệp Mời Tốt Nghiệp</span>
+            </a>
+        </div>
+        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
+            Copyright &copy; 2026 Nguyễn Huỳnh Phúc Khang. All rights reserved.
+        </p>
+    </footer>
+
+    <!-- Music Player (Nhạc nền) -->
+    <audio id="bg-audio" src="/background_music.mp3" loop autoplay></audio>
+    <div class="fixed bottom-6 left-6 flex items-center bg-white/85 backdrop-blur border border-brand-secondary/35 rounded-full shadow-lg p-1.5 space-x-2 z-50 group/music transition-all duration-300 hover:pr-4 no-print">
+        <button id="music-btn" onclick="toggleMusic()" class="w-9 h-9 bg-brand-secondary/15 rounded-full flex items-center justify-center text-brand-primary transition-all hover:scale-105 active:scale-95 shrink-0" title="Bật/Tắt nhạc nền">
+            <span id="music-icon" class="flex items-center justify-center">
+                <svg class="w-5 h-5 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                </svg>
+            </span>
+        </button>
+        <div class="w-0 overflow-hidden group-hover/music:w-20 transition-all duration-300 flex items-center">
+            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.4" class="w-20 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-secondary" oninput="changeVolume(this.value)" title="Điều chỉnh âm lượng">
+        </div>
+    </div>
+
+    <!-- BOOK FLIP MODAL -->
+    <div id="book-modal" class="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 no-print" onclick="closeBookModal()">
+        <!-- Header actions -->
+        <div class="w-full max-w-5xl flex justify-between items-center text-white mb-4" onclick="event.stopPropagation()">
+            <h3 id="book-modal-title" class="font-serif font-bold text-sm sm:text-base text-brand-secondary">Đọc Tài Liệu</h3>
+            <button class="text-white/70 hover:text-white text-3xl font-bold transition-colors" onclick="closeBookModal()">
+                &times;
+            </button>
+        </div>
+        
+        <!-- Book Viewport -->
+        <div class="w-full max-w-5xl flex items-center justify-center py-4" onclick="event.stopPropagation()">
+            <div id="book-container" class="relative w-[340px] sm:w-[1000px] h-[240px] sm:h-[700px]" style="perspective: 2000px;">
+                <!-- Luxurious 3D Golden Spine (Gáy sách) -->
+                <div class="absolute left-1/2 top-0 w-[14px] sm:w-[18px] h-full -translate-x-1/2 shadow-md rounded-[1px] border-x border-black/10" style="z-index: 45; background: linear-gradient(to right, #6b5327 0%, #a38144 25%, #c5a059 50%, #a38144 75%, #6b5327 100%);">
+                    <!-- Spine Ribs (Gân gáy sách) -->
+                    <div class="absolute top-[12%] left-0 w-full h-[2.5px] bg-black/25 border-y border-white/10"></div>
+                    <div class="absolute top-[32%] left-0 w-full h-[2.5px] bg-black/25 border-y border-white/10"></div>
+                    <div class="absolute top-[52%] left-0 w-full h-[2.5px] bg-black/25 border-y border-white/10"></div>
+                    <div class="absolute top-[72%] left-0 w-full h-[2.5px] bg-black/25 border-y border-white/10"></div>
+                    <div class="absolute top-[92%] left-0 w-full h-[2.5px] bg-black/25 border-y border-white/10"></div>
+                </div>
+                <!-- Deep page crease shadows on left and right sides of the spine -->
+                <div class="absolute left-1/2 top-0 w-[20px] sm:w-[40px] h-full z-30 -translate-x-full pointer-events-none" style="background: linear-gradient(to left, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0) 100%);"></div>
+                <div class="absolute left-1/2 top-0 w-[20px] sm:w-[40px] h-full z-30 pointer-events-none" style="background: linear-gradient(to right, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0) 100%);"></div>
+                <!-- Flipped sheets will be loaded here dynamically -->
+                <div id="book-spine" class="relative w-full h-full transform-style-3d"></div>
+            </div>
+        </div>
+
+        <!-- Footer Controls -->
+        <div class="flex items-center space-x-6 mt-4 text-white" onclick="event.stopPropagation()">
+            <button onclick="prevBookPage()" class="bg-brand-secondary/20 hover:bg-brand-secondary/30 border border-brand-secondary/40 px-4 py-2 rounded-xl text-[10px] sm:text-xs font-semibold transition-colors flex items-center space-x-1">
+                <span>← Trang trước</span>
+            </button>
+            <span id="book-page-num" class="text-[10px] sm:text-xs font-semibold tracking-wider text-gray-300">Trang 1 / 1</span>
+            <button onclick="nextBookPage()" class="bg-brand-secondary/20 hover:bg-brand-secondary/30 border border-brand-secondary/40 px-4 py-2 rounded-xl text-[10px] sm:text-xs font-semibold transition-colors flex items-center space-x-1">
+                <span>Trang sau →</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Load script client -->
+</body>
+</html>
